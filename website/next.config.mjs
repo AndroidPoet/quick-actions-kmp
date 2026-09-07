@@ -10,8 +10,11 @@ const withNextra = nextra({
 // site lives under a sub-path, so set basePath/assetPrefix accordingly.
 const basePath = '/quick-actions-kmp'
 
+import { fileURLToPath } from 'node:url'
+
 export default withNextra({
   output: 'export',
+  outputFileTracingRoot: fileURLToPath(new URL('.', import.meta.url)),
   images: { unoptimized: true },
   reactStrictMode: true,
   basePath,
