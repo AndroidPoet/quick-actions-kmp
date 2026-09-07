@@ -1,0 +1,28 @@
+---
+title: Results & Errors
+description: QuickActionsResult and the QuickActionsException codes.
+---
+
+# Results & Errors
+
+Every mutation returns `QuickActionsResult<Unit>`; nothing throws for control flow.
+
+```kotlin
+when (val result = quickActions.set(actions)) {
+    is QuickActionsResult.Success -> Unit
+    is QuickActionsResult.Failure -> log(result.error.code, result.error.message)
+}
+result.getOrNull(); result.errorOrNull()
+```
+
+| Code | Exception | When |
+| --- | --- | --- |
+| 3001 | `Unsupported` | JVM, macOS, Wasm; Android launcher without pin support (`requestPin`) |
+| 3002 | `InvalidAction` | Blank id or title, blank data key, duplicate ids, malformed JSON, unknown id for `requestPin`, or the platform rejected the shortcuts |
+| 3003 | `TooManyActions` | More actions than `maxActions`; carries `requested` and `max` |
+| 3004 | `RateLimited` | Android refused the change while the app was in the background |
+| 3005 | `PayloadTooLarge` | Encoded action over 1 KB |
+| 3006 | `PlatformError` | The platform failed for another reason (no launcher Activity, user locked, UIKit write failed) |
+
+Validation runs before any platform call: `QuickAction.validate()` and `List<QuickAction>.validate(max)` are
+public if you want to check early.

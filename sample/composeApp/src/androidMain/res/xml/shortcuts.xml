@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="static-about"
+        android:enabled="true"
+        android:icon="@drawable/ic_bolt"
+        android:shortcutShortLabel="@string/shortcut_about_short"
+        android:shortcutLongLabel="@string/shortcut_about_long">
+        <intent
+            android:action="io.github.androidpoet.jolt.action.QUICK_ACTION"
+            android:targetPackage="io.github.androidpoet.jolt.sample"
+            android:targetClass="io.github.androidpoet.jolt.sample.MainActivity">
+            <extra
+                android:name="io.github.androidpoet.jolt.extra.ACTION"
+                android:value='{"id":"static-about","title":"About Jolt","data":{"route":"about"}}' />
+        </intent>
+    </shortcut>
+</shortcuts>

@@ -1,0 +1,40 @@
+---
+title: Overview
+description: "One Kotlin Multiplatform API for home-screen quick actions: UIApplicationShortcutItem on iOS, dynamic shortcuts on Android."
+---
+
+import { Hero } from '../components/Hero'
+
+<Hero />
+
+**Jolt** gives you one typed API in `commonMain` to publish the menu that appears when the user
+long-presses your app icon, and to receive the tap. iOS uses `UIApplicationShortcutItem`; Android uses
+`ShortcutManagerCompat` dynamic shortcuts. The `QuickAction` you published comes back in the launch on
+both platforms, whether the tap started the app or reached it running.
+
+```kotlin
+val quickActions = rememberQuickActionsManager()
+
+QuickActions(listOf(QuickAction("start-timer", "Start timer", icon = "timer")), quickActions)
+
+OnQuickActionLaunch(quickActions) { launch -> navigate(launch.action.id) }
+```
+
+## Screenshots
+
+<div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'flex-start', marginTop: 16 }}>
+  <img src="/jolt-kmp/art/ios-menu.png" alt="iOS quick action menu" width="180" />
+  <img src="/jolt-kmp/art/ios-launch.png" alt="Sample app on iOS showing the action that opened it" width="180" />
+  <img src="/jolt-kmp/art/android-menu.png" alt="Android launcher shortcut menu" width="180" />
+  <img src="/jolt-kmp/art/android-launch.png" alt="Sample app on Android showing the action that opened it" width="180" />
+</div>
+
+## Why Jolt
+
+- **Native surfaces, one call site.** Quick actions and launcher shortcuts behind one interface.
+- **The launch round-trips.** Each action travels inside the platform payload, so a tap decodes back to the
+  same `QuickAction`, with its `data`, on both platforms.
+- **Cold starts are not lost.** A tap that starts the app is buffered until your collector runs.
+- **Lifecycle done right on Android.** One dispatch per Activity lifetime, no re-dispatch after rotation,
+  process restore or a relaunch from Recents, and forged intents are dropped.
+- **Typed failures.** `TooManyActions`, `RateLimited`, `InvalidAction` and friends, never exceptions for control flow.

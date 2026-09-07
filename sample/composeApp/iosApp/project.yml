@@ -1,0 +1,45 @@
+name: iosApp
+options:
+  bundleIdPrefix: com.example
+  deploymentTarget:
+    iOS: "15.0"
+settings:
+  base:
+    CODE_SIGN_STYLE: Automatic
+    SWIFT_VERSION: "5.0"
+    ENABLE_USER_SCRIPT_SANDBOXING: NO
+    # DEVELOPMENT_TEAM is supplied at build time for device builds; simulator needs none.
+targets:
+  iosApp:
+    type: application
+    platform: iOS
+    sources:
+      - path: iosApp
+    info:
+      path: iosApp/Info.plist
+      properties:
+        CFBundleDisplayName: Jolt
+        UILaunchScreen: {}
+        # Compose on ProMotion iPhones needs this or it aborts at launch.
+        CADisableMinimumFrameDurationOnPhone: true
+        # Scene-based lifecycle; quick actions arrive in JoltSceneDelegate.
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        # One static item, to show static items are delivered too and count against the four slots.
+        UIApplicationShortcutItems:
+          - UIApplicationShortcutItemType: static-about
+            UIApplicationShortcutItemTitle: About Jolt
+            UIApplicationShortcutItemIconSymbolName: bolt.fill
+            UIApplicationShortcutItemUserInfo:
+              route: about
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.jolt.sample
+        FRAMEWORK_SEARCH_PATHS: $(SRCROOT)/../build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)
+        OTHER_LDFLAGS: $(inherited) -framework ComposeApp
+    preBuildScripts:
+      - name: Compile Kotlin Framework
+        basedOnDependencyAnalysis: false
+        script: |
+          cd "$SRCROOT/../../.."
+          ./gradlew :sample:composeApp:embedAndSignAppleFrameworkForXcode

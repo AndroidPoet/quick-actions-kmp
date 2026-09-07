@@ -1,0 +1,9 @@
+public final class io/github/androidpoet/jolt/compose/QuickActionsEffectsKt {
+	public static final fun OnQuickActionLaunch (Lio/github/androidpoet/jolt/QuickActionsManager;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun QuickActions (Ljava/util/List;Lio/github/androidpoet/jolt/QuickActionsManager;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class io/github/androidpoet/jolt/compose/RememberQuickActionsManager_jvmKt {
+	public static final fun rememberQuickActionsManager (Landroidx/compose/runtime/Composer;I)Lio/github/androidpoet/jolt/QuickActionsManager;
+}
+

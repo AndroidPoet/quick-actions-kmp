@@ -1,0 +1,73 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Quality gates + JVM/Android/iOS-simulator tests. macOS runners ship the
+  # Android SDK and Xcode, so apiCheck (JVM, Android and native klib ABIs) runs here.
+  quality:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Formatting (spotlessCheck)
+        run: ./gradlew spotlessCheck
+
+      - name: Static analysis (detekt)
+        run: ./gradlew detekt
+
+      - name: Binary compatibility (apiCheck)
+        run: ./gradlew apiCheck
+
+      - name: JVM + Android + iOS simulator tests
+        run: ./gradlew jvmTest testDebugUnitTest iosSimulatorArm64Test
+
+      - name: Coverage gate (koverVerify)
+        run: ./gradlew koverVerify
+
+
+  # Compile every declared target family so a platform-specific break is caught
+  # on the OS that can actually link it.
+  multiplatform:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            name: apple
+            tasks: >-
+              compileKotlinIosArm64 compileKotlinIosSimulatorArm64
+              compileKotlinMacosArm64 compileKotlinMacosX64
+          - os: ubuntu-latest
+            name: jvm-wasm
+            tasks: compileKotlinJvm compileKotlinWasmJs
+    name: compile (${{ matrix.name }})
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Compile ${{ matrix.name }} targets
+        run: ./gradlew ${{ matrix.tasks }}

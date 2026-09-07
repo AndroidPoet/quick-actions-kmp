@@ -1,0 +1,55 @@
+---
+title: Usage
+description: Publish, change and observe quick actions; receive launches.
+---
+
+# Usage
+
+## Publish
+
+```kotlin
+val result = quickActions.set(listOf(a, b, c))     // replaces every dynamic action, in display order
+quickActions.add(d)                                 // appends, or replaces the action with the same id in place
+quickActions.remove("a", "b")
+quickActions.clear()                                // dynamic actions only; static items stay
+```
+
+`set` with a list equal to `actions.value` returns `Success` without touching the platform.
+
+## Observe
+
+```kotlin
+val published by quickActions.actions.collectAsState()   // restored from the platform on creation
+val room = quickActions.maxActions                        // platform ceiling minus static items
+```
+
+## Receive
+
+```kotlin
+quickActions.launches.collect { launch ->
+    launch.action          // the QuickAction as published (or synthesised for a static item)
+    launch.createdScreen   // true: the tap created the screen; false: it reached a screen already showing
+    launch.atEpochMillis
+}
+```
+
+Launches that happen before a collector exists are buffered. Each launch reaches exactly one collector.
+
+## Action fields
+
+| Field | iOS | Android |
+| --- | --- | --- |
+| `id` | `type` | shortcut id |
+| `title` | `localizedTitle` | short label |
+| `subtitle` | `localizedSubtitle` | appended to the long label: `title · subtitle` |
+| `icon` | SF Symbol name | `iconResolver(key)` |
+| `data` | `userInfo["jolt"]` (JSON) | intent extra `Jolt.EXTRA_ACTION` (JSON) |
+
+Encoded actions must stay under 1 KB (`PayloadTooLarge` otherwise). Treat `data` as untrusted input: it
+travels through an exported Activity on Android.
+
+## Visible slots
+
+Both home screens show about four items including static ones. iOS rejects a fifth dynamic item with
+`TooManyActions`; Android accepts up to `maxActions` (usually 14) and hides the overflow. Order the list by
+importance and keep it to `QUICK_ACTIONS_RECOMMENDED_MAX`.

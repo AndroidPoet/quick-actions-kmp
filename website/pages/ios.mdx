@@ -1,0 +1,48 @@
+---
+title: iOS
+description: UIApplicationShortcutItem behind the common API, plus the one Swift file that delivers taps.
+---
+
+# iOS
+
+iOS 13 and up. Items are written to `UIApplication.shared.shortcutItems` on the main thread.
+
+## Delivery
+
+UIKit hands quick actions to the app delegate, which Kotlin cannot own, so one Swift file bridges it.
+
+1. Copy `swift/JoltDelegates.swift` into the app target and point its `import` at your Kotlin framework.
+2. Adopt it in a SwiftUI app:
+
+```swift
+@main
+struct MyApp: App {
+    @UIApplicationDelegateAdaptor(JoltAppDelegate.self) var delegate
+    var body: some Scene { WindowGroup { ContentView() } }
+}
+```
+
+   UIKit apps with their own delegates forward the three calls instead: `scene(_:willConnectTo:)`
+   (`connectionOptions.shortcutItem`, `createdScreen: true`), `windowScene(_:performActionFor:)`
+   (`createdScreen: false`), and, without a scene manifest, `didFinishLaunchingWithOptions` returning
+   `false` when a shortcut item started the app so `performActionFor` does not fire a second time.
+3. Export the library from your Kotlin framework so Swift sees `Jolt` by name:
+
+```kotlin
+listOf(iosArm64(), iosSimulatorArm64()).forEach {
+    it.binaries.framework { export(project(":jolt")) }
+}
+```
+
+with `api("io.github.androidpoet:jolt:0.1.0")` in `commonMain`.
+
+## Icons and limits
+
+`icon` is an SF Symbol name (`UIApplicationShortcutIcon(systemImageName:)`). The Home Screen shows four
+items in total, static `UIApplicationShortcutItems` from `Info.plist` first, so `maxActions` is four minus
+the static count and a fifth dynamic item fails with `TooManyActions`.
+
+## Static items
+
+A static item carries no Jolt payload, so its launch is synthesised: `id = type`, the localized title and
+subtitle, and the string entries of its `userInfo` as `data`.

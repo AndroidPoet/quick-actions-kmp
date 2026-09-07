@@ -1,0 +1,47 @@
+---
+title: Getting Started
+description: Add Jolt to a Kotlin Multiplatform project.
+---
+
+# Getting Started
+
+## Install
+
+```kotlin
+commonMain.dependencies {
+    implementation("io.github.androidpoet:jolt:0.1.0")
+    implementation("io.github.androidpoet:jolt-compose:0.1.0")   // Compose Multiplatform helpers
+}
+```
+
+## Publish and receive
+
+```kotlin
+@Composable
+fun App() {
+    val quickActions = rememberQuickActionsManager()
+
+    QuickActions(
+        listOf(
+            QuickAction("start-timer", "Start timer", subtitle = "25 minutes", icon = "timer", data = mapOf("route" to "timer")),
+            QuickAction("log-water", "Log water", icon = "drop.fill", data = mapOf("route" to "water")),
+        ),
+        quickActions,
+    )
+
+    OnQuickActionLaunch(quickActions) { launch ->
+        navigate(launch.action.data["route"])
+        quickActions.reportUsed(launch.action.id)
+    }
+}
+```
+
+Keep both helpers at the root of the UI: publishing an equal list is free, and each launch reaches one collector.
+
+## Platform setup
+
+- **Android**: none when you use `rememberQuickActionsManager()`. Otherwise call `Jolt.attach(activity)` once in
+  `onCreate`. Set `Jolt.androidConfig` for icons. See [Android](/android).
+- **iOS**: copy `swift/JoltDelegates.swift` into the app target and adopt `JoltAppDelegate`. See [iOS](/ios).
+
+`Jolt.isDeliveryInstalled` tells you the wiring is in place.

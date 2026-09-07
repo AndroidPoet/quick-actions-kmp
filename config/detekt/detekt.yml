@@ -1,0 +1,53 @@
+build:
+  maxIssues: 0
+  excludeCorrectable: false
+
+config:
+  validation: true
+  warningsAsErrors: false
+
+complexity:
+  LongParameterList:
+    # Content models intentionally expose many named, defaulted
+    # parameters rather than mandatory option objects.
+    functionThreshold: 12
+    constructorThreshold: 14
+    ignoreDefaultParameters: true
+  LongMethod:
+    # ktlint (ktlint_official) expands single-line builder calls onto multiple
+    # lines via trailing commas, so a few wide bodies land just over 80.
+    threshold: 100
+  LargeClass:
+    excludes: ['**/test/**', '**/commonTest/**', '**/androidUnitTest/**', '**/*Test.kt']
+  TooManyFunctions:
+    active: false
+  CyclomaticComplexMethod:
+    threshold: 20
+
+style:
+  MagicNumber:
+    active: false
+  ReturnCount:
+    max: 6
+  MaxLineLength:
+    # ktlint (ktlint_official) owns wrapping; its continuation indent can push a
+    # handful of unbreakable lines (string templates, URLs) a few chars past 140.
+    maxLineLength: 150
+  UnusedPrivateMember:
+    active: true
+  ForbiddenComment:
+    active: false
+
+naming:
+  FunctionNaming:
+    active: true
+    # @Composable functions are PascalCase by convention.
+    ignoreAnnotated: ['Composable']
+
+exceptions:
+  TooGenericExceptionCaught:
+    active: false
+  SwallowedException:
+    active: false
+  ThrowingExceptionsWithoutMessageOrCause:
+    active: false
