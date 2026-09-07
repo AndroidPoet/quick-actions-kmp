@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Jolt</string>
+	<string>Quick Actions</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -33,7 +33,7 @@
 			<key>UIApplicationShortcutItemIconSymbolName</key>
 			<string>bolt.fill</string>
 			<key>UIApplicationShortcutItemTitle</key>
-			<string>About Jolt</string>
+			<string>About</string>
 			<key>UIApplicationShortcutItemType</key>
 			<string>static-about</string>
 			<key>UIApplicationShortcutItemUserInfo</key>

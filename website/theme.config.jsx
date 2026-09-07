@@ -8,14 +8,14 @@ const Logo = () => (
       <circle cx="8" cy="12" r="2.5" fill="#fff" />
       <rect x="12" y="10.5" width="7" height="3" rx="1.5" fill="#fff" opacity="0.9" />
     </svg>
-    <span>Jolt</span>
+    <span>quick-actions-kmp</span>
   </span>
 )
 
-const SITE = 'Jolt'
-const REPO = 'https://github.com/AndroidPoet/jolt-kmp'
+const SITE = 'quick-actions-kmp'
+const REPO = 'https://github.com/AndroidPoet/quick-actions-kmp'
 const DESCRIPTION =
-  'Jolt — one Kotlin Multiplatform API for home-screen quick actions: UIApplicationShortcutItem on iOS, dynamic shortcuts on Android.'
+  'quick-actions-kmp — one Kotlin Multiplatform API for home-screen quick actions: UIApplicationShortcutItem on iOS, dynamic shortcuts on Android.'
 
 export default {
   logo: <Logo />,
@@ -39,7 +39,7 @@ export default {
     const pageTitle = frontMatter?.title
     const title = pageTitle ? `${pageTitle} – ${SITE}` : SITE
     const description = frontMatter?.description ?? DESCRIPTION
-    const base = 'https://androidpoet.github.io/jolt-kmp'
+    const base = 'https://androidpoet.github.io/quick-actions-kmp'
     const path = asPath === '/' ? '' : asPath.split('?')[0].split('#')[0]
     const canonical = `${base}${path}`
     const ogImage = `${base}/favicon.svg`

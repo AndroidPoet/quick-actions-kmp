@@ -7,7 +7,7 @@ import { Hero } from '../components/Hero'
 
 <Hero />
 
-**Jolt** gives you one typed API in `commonMain` to publish the menu that appears when the user
+**quick-actions-kmp** gives you one typed API in `commonMain` to publish the menu that appears when the user
 long-presses your app icon, and to receive the tap. iOS uses `UIApplicationShortcutItem`; Android uses
 `ShortcutManagerCompat` dynamic shortcuts. The `QuickAction` you published comes back in the launch on
 both platforms, whether the tap started the app or reached it running.
@@ -15,7 +15,7 @@ both platforms, whether the tap started the app or reached it running.
 ```kotlin
 val quickActions = rememberQuickActionsManager()
 
-QuickActions(listOf(QuickAction("start-timer", "Start timer", icon = "timer")), quickActions)
+PublishQuickActions(listOf(QuickAction("start-timer", "Start timer", icon = "timer")), quickActions)
 
 OnQuickActionLaunch(quickActions) { launch -> navigate(launch.action.id) }
 ```
@@ -23,13 +23,13 @@ OnQuickActionLaunch(quickActions) { launch -> navigate(launch.action.id) }
 ## Screenshots
 
 <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'flex-start', marginTop: 16 }}>
-  <img src="/jolt-kmp/art/ios-menu.png" alt="iOS quick action menu" width="180" />
-  <img src="/jolt-kmp/art/ios-launch.png" alt="Sample app on iOS showing the action that opened it" width="180" />
-  <img src="/jolt-kmp/art/android-menu.png" alt="Android launcher shortcut menu" width="180" />
-  <img src="/jolt-kmp/art/android-launch.png" alt="Sample app on Android showing the action that opened it" width="180" />
+  <img src="/quick-actions-kmp/art/ios-menu.png" alt="iOS quick action menu" width="180" />
+  <img src="/quick-actions-kmp/art/ios-launch.png" alt="Sample app on iOS showing the action that opened it" width="180" />
+  <img src="/quick-actions-kmp/art/android-menu.png" alt="Android launcher shortcut menu" width="180" />
+  <img src="/quick-actions-kmp/art/android-launch.png" alt="Sample app on Android showing the action that opened it" width="180" />
 </div>
 
-## Why Jolt
+## Why quick-actions-kmp
 
 - **Native surfaces, one call site.** Quick actions and launcher shortcuts behind one interface.
 - **The launch round-trips.** Each action travels inside the platform payload, so a tap decodes back to the

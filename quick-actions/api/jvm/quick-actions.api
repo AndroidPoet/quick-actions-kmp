@@ -1,0 +1,154 @@
+public final class io/github/androidpoet/quickactions/QuickAction {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Map;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)Lio/github/androidpoet/quickactions/QuickAction;
+	public static synthetic fun copy$default (Lio/github/androidpoet/quickactions/QuickAction;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;ILjava/lang/Object;)Lio/github/androidpoet/quickactions/QuickAction;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getData ()Ljava/util/Map;
+	public final fun getIcon ()Ljava/lang/String;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getSubtitle ()Ljava/lang/String;
+	public final fun getTitle ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/github/androidpoet/quickactions/QuickActionCodec {
+	public static final field INSTANCE Lio/github/androidpoet/quickactions/QuickActionCodec;
+	public final fun decode (Ljava/lang/String;)Lio/github/androidpoet/quickactions/QuickAction;
+	public final fun decodeOrNull (Ljava/lang/String;)Lio/github/androidpoet/quickactions/QuickAction;
+	public final fun encode (Lio/github/androidpoet/quickactions/QuickAction;)Ljava/lang/String;
+}
+
+public final class io/github/androidpoet/quickactions/QuickActionLaunch {
+	public fun <init> (Lio/github/androidpoet/quickactions/QuickAction;ZJ)V
+	public final fun component1 ()Lio/github/androidpoet/quickactions/QuickAction;
+	public final fun component2 ()Z
+	public final fun component3 ()J
+	public final fun copy (Lio/github/androidpoet/quickactions/QuickAction;ZJ)Lio/github/androidpoet/quickactions/QuickActionLaunch;
+	public static synthetic fun copy$default (Lio/github/androidpoet/quickactions/QuickActionLaunch;Lio/github/androidpoet/quickactions/QuickAction;ZJILjava/lang/Object;)Lio/github/androidpoet/quickactions/QuickActionLaunch;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAction ()Lio/github/androidpoet/quickactions/QuickAction;
+	public final fun getAtEpochMillis ()J
+	public final fun getCreatedScreen ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/github/androidpoet/quickactions/QuickActionModelsKt {
+	public static final field QUICK_ACTIONS_RECOMMENDED_MAX I
+}
+
+public final class io/github/androidpoet/quickactions/QuickActionValidationKt {
+	public static final field QUICK_ACTION_MAX_PAYLOAD_BYTES I
+	public static final fun validate (Lio/github/androidpoet/quickactions/QuickAction;)Lio/github/androidpoet/quickactions/QuickActionsException;
+	public static final fun validate (Ljava/util/List;I)Lio/github/androidpoet/quickactions/QuickActionsException;
+}
+
+public abstract class io/github/androidpoet/quickactions/QuickActionsException : java/lang/Exception {
+	public static final field CODE_INVALID_ACTION I
+	public static final field CODE_PAYLOAD_TOO_LARGE I
+	public static final field CODE_PLATFORM I
+	public static final field CODE_RATE_LIMITED I
+	public static final field CODE_TOO_MANY I
+	public static final field CODE_UNSUPPORTED I
+	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getCause ()Ljava/lang/Throwable;
+	public final fun getCode ()I
+	public fun getMessage ()Ljava/lang/String;
+}
+
+public final class io/github/androidpoet/quickactions/QuickActionsException$InvalidAction : io/github/androidpoet/quickactions/QuickActionsException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class io/github/androidpoet/quickactions/QuickActionsException$PayloadTooLarge : io/github/androidpoet/quickactions/QuickActionsException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class io/github/androidpoet/quickactions/QuickActionsException$PlatformError : io/github/androidpoet/quickactions/QuickActionsException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class io/github/androidpoet/quickactions/QuickActionsException$RateLimited : io/github/androidpoet/quickactions/QuickActionsException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class io/github/androidpoet/quickactions/QuickActionsException$TooManyActions : io/github/androidpoet/quickactions/QuickActionsException {
+	public fun <init> (IILjava/lang/Throwable;)V
+	public synthetic fun <init> (IILjava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getMax ()I
+	public final fun getRequested ()I
+}
+
+public final class io/github/androidpoet/quickactions/QuickActionsException$Unsupported : io/github/androidpoet/quickactions/QuickActionsException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public abstract interface class io/github/androidpoet/quickactions/QuickActionsManager {
+	public abstract fun add (Lio/github/androidpoet/quickactions/QuickAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun clear (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getActions ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun getLaunches ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun getMaxActions ()I
+	public abstract fun isSupported ()Z
+	public abstract fun remove ([Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun reportUsed (Ljava/lang/String;)V
+	public abstract fun set (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class io/github/androidpoet/quickactions/QuickActionsResult {
+}
+
+public final class io/github/androidpoet/quickactions/QuickActionsResult$Failure : io/github/androidpoet/quickactions/QuickActionsResult {
+	public fun <init> (Lio/github/androidpoet/quickactions/QuickActionsException;)V
+	public final fun component1 ()Lio/github/androidpoet/quickactions/QuickActionsException;
+	public final fun copy (Lio/github/androidpoet/quickactions/QuickActionsException;)Lio/github/androidpoet/quickactions/QuickActionsResult$Failure;
+	public static synthetic fun copy$default (Lio/github/androidpoet/quickactions/QuickActionsResult$Failure;Lio/github/androidpoet/quickactions/QuickActionsException;ILjava/lang/Object;)Lio/github/androidpoet/quickactions/QuickActionsResult$Failure;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getError ()Lio/github/androidpoet/quickactions/QuickActionsException;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/github/androidpoet/quickactions/QuickActionsResult$Success : io/github/androidpoet/quickactions/QuickActionsResult {
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;)Lio/github/androidpoet/quickactions/QuickActionsResult$Success;
+	public static synthetic fun copy$default (Lio/github/androidpoet/quickactions/QuickActionsResult$Success;Ljava/lang/Object;ILjava/lang/Object;)Lio/github/androidpoet/quickactions/QuickActionsResult$Success;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/github/androidpoet/quickactions/QuickActionsResultKt {
+	public static final fun errorOrNull (Lio/github/androidpoet/quickactions/QuickActionsResult;)Lio/github/androidpoet/quickactions/QuickActionsException;
+	public static final fun getOrNull (Lio/github/androidpoet/quickactions/QuickActionsResult;)Ljava/lang/Object;
+}
+
+public final class io/github/androidpoet/quickactions/UnsupportedQuickActionsManager : io/github/androidpoet/quickactions/QuickActionsManager {
+	public fun <init> ()V
+	public fun add (Lio/github/androidpoet/quickactions/QuickAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun clear (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getActions ()Lkotlinx/coroutines/flow/StateFlow;
+	public fun getLaunches ()Lkotlinx/coroutines/flow/Flow;
+	public fun getMaxActions ()I
+	public fun isSupported ()Z
+	public fun remove ([Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun reportUsed (Ljava/lang/String;)V
+	public fun set (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+

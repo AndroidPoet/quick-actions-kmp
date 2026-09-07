@@ -1,6 +1,6 @@
 ---
 title: Getting Started
-description: Add Jolt to a Kotlin Multiplatform project.
+description: Add quick-actions-kmp to a Kotlin Multiplatform project.
 ---
 
 # Getting Started
@@ -9,8 +9,8 @@ description: Add Jolt to a Kotlin Multiplatform project.
 
 ```kotlin
 commonMain.dependencies {
-    implementation("io.github.androidpoet:jolt:0.1.0")
-    implementation("io.github.androidpoet:jolt-compose:0.1.0")   // Compose Multiplatform helpers
+    implementation("io.github.androidpoet:quick-actions:0.1.0")
+    implementation("io.github.androidpoet:quick-actions-compose:0.1.0")   // Compose Multiplatform helpers
 }
 ```
 
@@ -21,7 +21,7 @@ commonMain.dependencies {
 fun App() {
     val quickActions = rememberQuickActionsManager()
 
-    QuickActions(
+    PublishQuickActions(
         listOf(
             QuickAction("start-timer", "Start timer", subtitle = "25 minutes", icon = "timer", data = mapOf("route" to "timer")),
             QuickAction("log-water", "Log water", icon = "drop.fill", data = mapOf("route" to "water")),
@@ -40,8 +40,8 @@ Keep both helpers at the root of the UI: publishing an equal list is free, and e
 
 ## Platform setup
 
-- **Android**: none when you use `rememberQuickActionsManager()`. Otherwise call `Jolt.attach(activity)` once in
-  `onCreate`. Set `Jolt.androidConfig` for icons. See [Android](/android).
-- **iOS**: copy `swift/JoltDelegates.swift` into the app target and adopt `JoltAppDelegate`. See [iOS](/ios).
+- **Android**: none when you use `rememberQuickActionsManager()`. Otherwise call `QuickActions.attach(activity)` once in
+  `onCreate`. Set `QuickActions.androidConfig` for icons. See [Android](/android).
+- **iOS**: copy `swift/QuickActionsDelegates.swift` into the app target and adopt `QuickActionsAppDelegate`. See [iOS](/ios).
 
-`Jolt.isDeliveryInstalled` tells you the wiring is in place.
+`QuickActions.isDeliveryInstalled` tells you the wiring is in place.

@@ -15,7 +15,7 @@ plugins {
 }
 
 // Published modules whose public API and coverage we track.
-val publishedModules = listOf("jolt", "jolt-compose")
+val publishedModules = listOf("quick-actions", "quick-actions-compose")
 
 // Validate the binary (ABI) compatibility of every published module so an
 // accidental public-API break is caught in review instead of by consumers.

@@ -43,7 +43,7 @@ Launches that happen before a collector exists are buffered. Each launch reaches
 | `title` | `localizedTitle` | short label |
 | `subtitle` | `localizedSubtitle` | appended to the long label: `title · subtitle` |
 | `icon` | SF Symbol name | `iconResolver(key)` |
-| `data` | `userInfo["jolt"]` (JSON) | intent extra `Jolt.EXTRA_ACTION` (JSON) |
+| `data` | `userInfo["quickActions"]` (JSON) | intent extra `QuickActions.EXTRA_ACTION` (JSON) |
 
 Encoded actions must stay under 1 KB (`PayloadTooLarge` otherwise). Treat `data` as untrusted input: it
 travels through an exported Activity on Android.

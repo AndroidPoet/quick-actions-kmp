@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-const REPO = 'https://github.com/AndroidPoet/jolt-kmp'
+const REPO = 'https://github.com/AndroidPoet/quick-actions-kmp'
 
 const GitHubMark = () => (
   <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
@@ -13,7 +13,7 @@ export function Hero() {
     <div className="pk-hero">
       <div className="pk-hero-glow" aria-hidden="true" />
       <span className="pk-hero-badge">Kotlin Multiplatform · UIApplicationShortcutItem + ShortcutManagerCompat</span>
-      <h1 className="pk-hero-title">Jolt</h1>
+      <h1 className="pk-hero-title">quick-actions-kmp</h1>
       <p className="pk-hero-sub">
         Publish the long-press icon menu and receive the tap from commonMain. iOS renders Home Screen
         quick actions; Android renders launcher shortcuts. The same action comes back on launch.

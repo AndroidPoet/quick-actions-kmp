@@ -1,4 +1,4 @@
-import io.github.androidpoet.jolt.Configuration
+import io.github.androidpoet.quickactions.Configuration
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -16,15 +16,15 @@ kotlin {
         target.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
-            // Exposes Jolt to Swift under its own name for the delegate glue.
-            export(project(":jolt"))
+            // Exposes QuickActions to Swift under its own name for the delegate glue.
+            export(project(":quick-actions"))
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            api(project(":jolt"))
-            implementation(project(":jolt-compose"))
+            api(project(":quick-actions"))
+            implementation(project(":quick-actions-compose"))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -39,11 +39,11 @@ kotlin {
 }
 
 android {
-    namespace = "io.github.androidpoet.jolt.sample"
+    namespace = "io.github.androidpoet.quickactions.sample"
     compileSdk = Configuration.COMPILE_SDK
 
     defaultConfig {
-        applicationId = "io.github.androidpoet.jolt.sample"
+        applicationId = "io.github.androidpoet.quickactions.sample"
         minSdk = Configuration.MIN_SDK
         targetSdk = Configuration.COMPILE_SDK
         versionCode = 1

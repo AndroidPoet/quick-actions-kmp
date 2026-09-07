@@ -8,18 +8,18 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- **`jolt`** — `QuickActionsManager` with `set`, `add`, `remove`, `clear`, `reportUsed`, an
+- **`quick-actions`** — `QuickActionsManager` with `set`, `add`, `remove`, `clear`, `reportUsed`, an
   `actions` state flow restored from the platform and a `launches` flow that buffers the tap
   that started the app; typed `QuickActionsResult` / `QuickActionsException` (codes 3001–3006);
   `QuickAction` with title, subtitle, icon and free-form data; JSON wire codec shared with the
   iOS `userInfo` and Android intent extras.
-- **Android** — `AndroidQuickActionsManager` over `ShortcutManagerCompat`; `Jolt.attach(activity)`
+- **Android** — `AndroidQuickActionsManager` over `ShortcutManagerCompat`; `QuickActions.attach(activity)`
   wires delivery for the Activity lifetime, dispatches the launch intent once (saved-state flag),
   ignores relaunches from Recents and drops forged intents whose id no shortcut carries;
   `isRateLimited`, `canPin`, `requestPin`.
-- **iOS** — `IosQuickActionsManager` over `UIApplication.shortcutItems`; `Jolt.handle(item:)`
-  for the delegate glue `swift/JoltDelegates.swift` (scene and non-scene paths); static
+- **iOS** — `IosQuickActionsManager` over `UIApplication.shortcutItems`; `QuickActions.handle(item:)`
+  for the delegate glue `swift/QuickActionsDelegates.swift` (scene and non-scene paths); static
   `Info.plist` items surface as synthesised actions.
-- **`jolt-compose`** — `rememberQuickActionsManager()`, `QuickActions(actions)` and
+- **`quick-actions-compose`** — `rememberQuickActionsManager()`, `PublishQuickActions(actions)` and
   `OnQuickActionLaunch { }` for Compose Multiplatform.
 - JVM, macOS and Wasm stubs so shared code compiles everywhere.

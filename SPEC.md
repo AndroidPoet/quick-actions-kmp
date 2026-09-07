@@ -1,12 +1,12 @@
-# jolt-kmp — Specification (v0.1.0)
+# quick-actions-kmp — Specification (v0.1.0)
 
 One common Kotlin Multiplatform API to **publish home-screen quick actions** — the menu that
 appears when the user long-presses the app icon — and to **receive the launch** when one is
 tapped. Backed by `UIApplicationShortcutItem` on iOS and `ShortcutManagerCompat` dynamic
 shortcuts on Android.
 
-Repo `AndroidPoet/jolt-kmp`. Artifacts `io.github.androidpoet:jolt`, `io.github.androidpoet:jolt-compose`.
-Package `io.github.androidpoet.jolt`. Built on the halo-kmp / passkeys-kmp house standard
+Repo `AndroidPoet/quick-actions-kmp`. Artifacts `io.github.androidpoet:quick-actions`, `io.github.androidpoet:quick-actions-compose`.
+Package `io.github.androidpoet.quickactions`. Built on the halo-kmp / passkeys-kmp house standard
 (explicitApi, BCV dumps, detekt, spotless/ktlint, kover, dokka, KDoc everywhere, CoC, Nextra docs,
 vanniktech publish).
 
@@ -85,7 +85,7 @@ public sealed class QuickActionsException(code, message, cause) : Exception {
 Also public in `commonMain`:
 - `QuickActionCodec` — `encode(action)` / `decode(json)`: flat JSON `{id,title,subtitle?,icon?,data}`,
   unknown keys ignored, malformed input throws `InvalidAction`. This is the wire contract into iOS
-  `userInfo["jolt"]` and Android intent extra `Jolt.EXTRA_ACTION`.
+  `userInfo["quickActions"]` and Android intent extra `QuickActions.EXTRA_ACTION`.
 - `QuickAction.validate(): QuickActionsException?` — blank `id` or `title` → `InvalidAction`;
   encoded action over `QUICK_ACTION_MAX_PAYLOAD_BYTES` (1024) → `PayloadTooLarge`.
 - `List<QuickAction>.validate(max: Int)` — first per-item failure, then duplicate ids → `InvalidAction`,
@@ -99,11 +99,11 @@ Also public in `commonMain`:
 Launches that arrive before any collector (cold start) are buffered, not dropped. A launch is consumed by
 exactly one collector; the Compose helper is the intended one.
 
-### Compose module (`jolt-compose`)
+### Compose module (`quick-actions-compose`)
 - `@Composable expect fun rememberQuickActionsManager(): QuickActionsManager` — remembered, closed in
-  `DisposableEffect`. Android → `AndroidQuickActionsManager(applicationContext, Jolt.androidConfig)` **plus
+  `DisposableEffect`. Android → `AndroidQuickActionsManager(applicationContext, QuickActions.androidConfig)` **plus
   automatic delivery** (see 3.1); iOS → `IosQuickActionsManager()`; jvm/wasmJs → `UnsupportedQuickActionsManager`.
-- `@Composable fun QuickActions(actions: List<QuickAction>, manager = rememberQuickActionsManager(), onResult: (QuickActionsResult<Unit>) -> Unit = {})`
+- `@Composable fun PublishQuickActions(actions: List<QuickAction>, manager = rememberQuickActionsManager(), onResult: (QuickActionsResult<Unit>) -> Unit = {})`
   — declarative publish: `LaunchedEffect(actions) { onResult(manager.set(actions)) }`.
 - `@Composable fun OnQuickActionLaunch(manager = rememberQuickActionsManager(), onLaunch: (QuickActionLaunch) -> Unit)`
   — collects `manager.launches` in a `LaunchedEffect`, latest `onLaunch` via `rememberUpdatedState`.
@@ -120,10 +120,10 @@ public class AndroidQuickActionsConfig(
     val intentFlags: Int = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TOP or FLAG_ACTIVITY_SINGLE_TOP,
     val intentBuilder: ((Context, QuickAction) -> Intent)? = null,  // full override; library still adds action + extra
 )
-public object Jolt {
+public object QuickActions {
     public var androidConfig: AndroidQuickActionsConfig
-    public const val ACTION: String = "io.github.androidpoet.jolt.action.QUICK_ACTION"
-    public const val EXTRA_ACTION: String = "io.github.androidpoet.jolt.extra.ACTION"
+    public const val ACTION: String = "io.github.androidpoet.quickactions.action.QUICK_ACTION"
+    public const val EXTRA_ACTION: String = "io.github.androidpoet.quickactions.extra.ACTION"
     /** True once delivery is wired ([attach] or a handle* call). Lets apps detect missing glue. */
     public val isDeliveryInstalled: Boolean
     /** One-line wiring for ComponentActivity: dispatches the launch intent once per Activity lifetime (a
@@ -135,7 +135,7 @@ public object Jolt {
     public fun handleLaunchIntent(intent: Intent?, savedInstanceState: Bundle?): QuickActionLaunch?
     public fun handleNewIntent(intent: Intent?): QuickActionLaunch?
 }
-public class AndroidQuickActionsManager(context: Context, config: AndroidQuickActionsConfig = Jolt.androidConfig) : QuickActionsManager {
+public class AndroidQuickActionsManager(context: Context, config: AndroidQuickActionsConfig = QuickActions.androidConfig) : QuickActionsManager {
     public val isRateLimited: Boolean                      // ShortcutManagerCompat.isRateLimitingActive
     public val canPin: Boolean                             // isRequestPinShortcutSupported
     public suspend fun requestPin(id: String): QuickActionsResult<Unit>   // pins a published dynamic action
@@ -143,7 +143,7 @@ public class AndroidQuickActionsManager(context: Context, config: AndroidQuickAc
 ```
 - Mapping: `ShortcutInfoCompat.Builder(context, id).setShortLabel(title).setLongLabel(subtitle ?: title)
   .setIcon(resolved).setIntent(intent).setRank(index)`. Intent = `intentBuilder?.invoke(...) ?: Intent().setComponent(target)`,
-  then always `setAction(Jolt.ACTION)`, `addFlags(intentFlags)`, `putExtra(EXTRA_ACTION, QuickActionCodec.encode(action))`.
+  then always `setAction(QuickActions.ACTION)`, `addFlags(intentFlags)`, `putExtra(EXTRA_ACTION, QuickActionCodec.encode(action))`.
 - `maxActions = getMaxShortcutCountPerActivity(context) - getShortcuts(FLAG_MATCH_MANIFEST).size` (floor 0).
 - `set`: validate(list, maxActions) → if `isRateLimitingActive` → `RateLimited` → `setDynamicShortcuts`;
   `false` → `RateLimited`; `IllegalArgumentException` → `TooManyActions`/`InvalidAction`; any other → `PlatformError`.
@@ -151,45 +151,45 @@ public class AndroidQuickActionsManager(context: Context, config: AndroidQuickAc
 - `clear` → `removeAllDynamicShortcuts`. `remove(ids)` → `removeDynamicShortcuts(ids)`; `add` → set(current ∖ id + action).
 - Restore: on construction, `getShortcuts(FLAG_MATCH_DYNAMIC)` → decode `EXTRA_ACTION` from each intent →
   `actions`. Shortcuts without our extra (foreign dynamic shortcuts) are ignored.
-- **Delivery.** `Jolt.attach(activity)` is the sanctioned entry; `jolt-compose`'s Android
+- **Delivery.** `QuickActions.attach(activity)` is the sanctioned entry; `quick-actions-compose`'s Android
   `rememberQuickActionsManager()` calls it with `LocalActivity`. The listener is Activity-scoped, not
   composition-scoped, so a warm tap while another screen is showing is still delivered. The decision logic
   (`LaunchIntentPolicy`: flags, saved state, extra) is a pure function so it is unit-testable without a device.
 - `set` returns `Success` without touching the platform when the requested list equals `actions.value`.
 - `rememberQuickActionsManager()` returns one process-wide instance, so every call site shares `actions`.
-- Static `shortcuts.xml` entries are delivered too when their intent uses `Jolt.ACTION` and carries `EXTRA_ACTION`.
+- Static `shortcuts.xml` entries are delivered too when their intent uses `QuickActions.ACTION` and carries `EXTRA_ACTION`.
 - `reportUsed` → `ShortcutManagerCompat.reportShortcutUsed`.
 
 ### 3.2 iOS (iOS 13+)
 
 ```kotlin
-public object Jolt {
+public object QuickActions {
     /** Called by the Swift glue with the tapped item. Returns true when handled (always, for non-nil). */
     public fun handle(item: UIApplicationShortcutItem, coldStart: Boolean): Boolean
 }
 public class IosQuickActionsManager() : QuickActionsManager
 ```
-- `Jolt.installDelivery()` is called by the glue's init; `Jolt.isDeliveryInstalled` exposes it.
+- `QuickActions.installDelivery()` is called by the glue's init; `QuickActions.isDeliveryInstalled` exposes it.
 - The platform list is read lazily on the main thread (`dispatch_sync` when constructed elsewhere), never eagerly
   off-main.
 - Mapping: `UIApplicationShortcutItem(type = id, localizedTitle = title, localizedSubtitle = subtitle,
-  icon = icon?.let { UIApplicationShortcutIcon.iconWithSystemImageName(it) }, userInfo = mapOf("jolt" to encode(action)))`.
+  icon = icon?.let { UIApplicationShortcutIcon.iconWithSystemImageName(it) }, userInfo = mapOf("quickActions" to encode(action)))`.
   Set on `Dispatchers.Main`.
 - `maxActions = 4 - (Bundle.main "UIApplicationShortcutItems").count` (floor 0).
 - `set` validates then assigns; `clear` assigns `emptyList()`; `remove`/`add` derive from `actions.value`.
   Never throws; `PlatformError` only if the main-thread hop fails.
-- Restore: on construction read `UIApplication.shared.shortcutItems` → decode `userInfo["jolt"]`; items without
+- Restore: on construction read `UIApplication.shared.shortcutItems` → decode `userInfo["quickActions"]`; items without
   it (foreign/static) are ignored for `actions`.
-- **Delivery.** `handle(item)` decodes `userInfo["jolt"]`; a static item without it becomes
+- **Delivery.** `handle(item)` decodes `userInfo["quickActions"]`; a static item without it becomes
   `QuickAction(id = type, title = localizedTitle, subtitle = localizedSubtitle, data = userInfo strings)`.
-  Shipped glue `swift/JoltDelegates.swift`: `JoltAppDelegate` (`configurationForConnecting` → `JoltSceneDelegate`),
-  `JoltSceneDelegate` (`scene(_:willConnectTo:)` → `connectionOptions.shortcutItem`, coldStart true;
+  Shipped glue `swift/QuickActionsDelegates.swift`: `QuickActionsAppDelegate` (`configurationForConnecting` → `QuickActionsSceneDelegate`),
+  `QuickActionsSceneDelegate` (`scene(_:willConnectTo:)` → `connectionOptions.shortcutItem`, coldStart true;
   `windowScene(_:performActionFor:)` → coldStart false). SwiftUI apps add
-  `@UIApplicationDelegateAdaptor(JoltAppDelegate.self) var delegate`. UIKit apps forward from their own delegates.
+  `@UIApplicationDelegateAdaptor(QuickActionsAppDelegate.self) var delegate`. UIKit apps forward from their own delegates.
 - `reportUsed` no-op.
 
 ### 3.3 JVM desktop, macOS, Wasm
-`UnsupportedQuickActionsManager`. `jolt-compose` has no macOS target (Compose Multiplatform has none); the
+`UnsupportedQuickActionsManager`. `quick-actions-compose` has no macOS target (Compose Multiplatform has none); the
 jvm and wasmJs actuals return it.
 
 ## 4. Tests (written from this spec, independent of the implementation)
@@ -202,8 +202,8 @@ androidUnitTest (pure seams only, no Robolectric): icon resolution precedence (r
 `FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY`, and dispatches once for a valid extra. Framework-bound behaviour
 (`ShortcutManagerCompat`, `attach`) is verified on the emulator.
 iosTest: `IosQuickActionsManager` over an injected `ShortcutItemsStore` fake: set → store receives items with
-`userInfo["jolt"]`; restore decodes; `TooManyActions` respects static count; `remove`/`add` keep order;
-`Jolt.handle` for a static item synthesises the action.
+`userInfo["quickActions"]`; restore decodes; `TooManyActions` respects static count; `remove`/`add` keep order;
+`QuickActions.handle` for a static item synthesises the action.
 
 ## 5. Acceptance (device)
 
@@ -227,7 +227,7 @@ Critic: skeptical staff mobile engineer lens, 12 findings, all dispositioned.
 | # | Finding | Disposition |
 |---|---|---|
 | 1 | Recents relaunch re-delivers the root intent's extra | **Fixed**: `LaunchIntentPolicy` drops intents with `FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY`; §5 covers Recents |
-| 2 | Warm tap lost when the Compose helper is not composed | **Fixed**: `Jolt.attach(activity)` owns an Activity-scoped `OnNewIntentListener`; Compose helper only calls attach |
+| 2 | Warm tap lost when the Compose helper is not composed | **Fixed**: `QuickActions.attach(activity)` owns an Activity-scoped `OnNewIntentListener`; Compose helper only calls attach |
 | 3 | `handleIntent` cannot express cold vs warm; "cold start" misdefined | **Fixed**: split into `handleLaunchIntent` / `handleNewIntent`; field renamed `createdScreen` with a precise definition |
 | 4 | Payload trusted through an exported Activity | **Fixed**: `attach` drops launches whose id no shortcut (dynamic, pinned, manifest) carries; `data` documented as untrusted; raw handle* documented as unverified |
 | 5 | iOS restore off the main thread | **Fixed**: lazy seed; the store hops to main with `dispatch_sync` when needed |
@@ -236,5 +236,5 @@ Critic: skeptical staff mobile engineer lens, 12 findings, all dispositioned.
 | 8 | Declarative helper re-publishes and can surface `RateLimited` for a no-op | **Fixed**: `set` short-circuits on structural equality before the rate-limit check |
 | 9 | Pinned/static launches carry ids absent from `actions` | **Fixed** in docs; restore sorted by rank. Rejected: `pinned` flow, out of scope for 0.1.0 |
 | 10 | Android unit tests framework-bound or vacuous | **Fixed**: pure `LaunchIntentPolicy` seam with the four negative cases; framework behaviour on the emulator |
-| 11 | `close()` is a no-op; missing glue is silent | **Fixed**: `close()` removed from the interface; `Jolt.isDeliveryInstalled` on both platforms; troubleshooting table |
+| 11 | `close()` is a no-op; missing glue is silent | **Fixed**: `close()` removed from the interface; `QuickActions.isDeliveryInstalled` on both platforms; troubleshooting table |
 | 12 | macOS compose actual promised; activity dependency missing; placeholders | **Fixed**: §3.3 corrected, `androidx.activity.compose` + `LocalActivity`, placeholders deleted before `apiDump` |

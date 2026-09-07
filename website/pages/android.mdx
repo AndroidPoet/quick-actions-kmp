@@ -1,6 +1,6 @@
 ---
 title: Android
-description: "Dynamic shortcuts through ShortcutManagerCompat, launch delivery through Jolt.attach."
+description: "Dynamic shortcuts through ShortcutManagerCompat, launch delivery through QuickActions.attach."
 ---
 
 # Android
@@ -10,7 +10,7 @@ API 26 and up, `androidx.core` 1.17.
 ## Configuration
 
 ```kotlin
-Jolt.androidConfig =
+QuickActions.androidConfig =
     AndroidQuickActionsConfig(
         defaultIconRes = R.drawable.ic_bolt,                       // 0 → application icon
         iconResolver = { key -> if (key == "timer") R.drawable.ic_timer else 0 },
@@ -25,12 +25,12 @@ resource name, so shrunk release builds keep working.
 
 ## Delivery
 
-Every shortcut opens the target Activity with `Jolt.ACTION` and the encoded action in `Jolt.EXTRA_ACTION`.
+Every shortcut opens the target Activity with `QuickActions.ACTION` and the encoded action in `QuickActions.EXTRA_ACTION`.
 
-- **Compose**: `rememberQuickActionsManager()` calls `Jolt.attach(activity)` for you.
-- **ComponentActivity**: call `Jolt.attach(this)` once in `onCreate`.
-- **Plain Activity**: `Jolt.handleLaunchIntent(intent, savedInstanceState)` in `onCreate` and
-  `Jolt.handleNewIntent(intent)` in `onNewIntent`.
+- **Compose**: `rememberQuickActionsManager()` calls `QuickActions.attach(activity)` for you.
+- **ComponentActivity**: call `QuickActions.attach(this)` once in `onCreate`.
+- **Plain Activity**: `QuickActions.handleLaunchIntent(intent, savedInstanceState)` in `onCreate` and
+  `QuickActions.handleNewIntent(intent)` in `onNewIntent`.
 
 `attach` dispatches the launch intent once per Activity lifetime (a saved-state flag survives rotation and
 process restore), ignores relaunches from Recents (`FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY`), listens for
@@ -39,14 +39,14 @@ your app, so `am start` with a forged extra never reaches `launches`.
 
 ## Static shortcuts
 
-Entries in `shortcuts.xml` are delivered too when their intent uses `Jolt.ACTION` and carries the action JSON:
+Entries in `shortcuts.xml` are delivered too when their intent uses `QuickActions.ACTION` and carries the action JSON:
 
 ```xml
 <intent
-    android:action="io.github.androidpoet.jolt.action.QUICK_ACTION"
+    android:action="io.github.androidpoet.quickactions.action.QUICK_ACTION"
     android:targetPackage="com.example.app"
     android:targetClass="com.example.app.MainActivity">
-    <extra android:name="io.github.androidpoet.jolt.extra.ACTION" android:value='{"id":"about","title":"About"}' />
+    <extra android:name="io.github.androidpoet.quickactions.extra.ACTION" android:value='{"id":"about","title":"About"}' />
 </intent>
 ```
 

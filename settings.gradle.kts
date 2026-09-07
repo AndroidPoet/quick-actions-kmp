@@ -14,8 +14,8 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "jolt-kmp"
+rootProject.name = "quick-actions-kmp"
 
-include(":jolt")
-include(":jolt-compose")
+include(":quick-actions")
+include(":quick-actions-compose")
 include(":sample:composeApp")

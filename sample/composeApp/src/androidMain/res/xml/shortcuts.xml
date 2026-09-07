@@ -7,12 +7,12 @@
         android:shortcutShortLabel="@string/shortcut_about_short"
         android:shortcutLongLabel="@string/shortcut_about_long">
         <intent
-            android:action="io.github.androidpoet.jolt.action.QUICK_ACTION"
-            android:targetPackage="io.github.androidpoet.jolt.sample"
-            android:targetClass="io.github.androidpoet.jolt.sample.MainActivity">
+            android:action="io.github.androidpoet.quickactions.action.QUICK_ACTION"
+            android:targetPackage="io.github.androidpoet.quickactions.sample"
+            android:targetClass="io.github.androidpoet.quickactions.sample.MainActivity">
             <extra
-                android:name="io.github.androidpoet.jolt.extra.ACTION"
-                android:value='{"id":"static-about","title":"About Jolt","data":{"route":"about"}}' />
+                android:name="io.github.androidpoet.quickactions.extra.ACTION"
+                android:value='{"id":"static-about","title":"About","data":{"route":"about"}}' />
         </intent>
     </shortcut>
 </shortcuts>

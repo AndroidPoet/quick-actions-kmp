@@ -1,9 +1,9 @@
-<h1 align="center">Jolt</h1>
+<h1 align="center">quick-actions-kmp</h1>
 
 <p align="center"><b>One API. Home-screen quick actions on iOS and Android.</b></p>
 
 <p align="center">
-  <a href="https://central.sonatype.com/artifact/io.github.androidpoet/jolt"><img alt="Maven Central" src="https://img.shields.io/maven-central/v/io.github.androidpoet/jolt?color=blue&label=Maven%20Central"/></a>
+  <a href="https://central.sonatype.com/artifact/io.github.androidpoet/quick-actions"><img alt="Maven Central" src="https://img.shields.io/maven-central/v/io.github.androidpoet/quick-actions?color=blue&label=Maven%20Central"/></a>
   <a href="https://kotlinlang.org"><img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-2.2.21-7F52FF?logo=kotlin&logoColor=white"/></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/License-MIT-green.svg"/></a>
 </p>
@@ -35,7 +35,7 @@ comes back in the launch, on both platforms, whether the tap started the app or 
   <tr>
     <td><img src="art/ios-menu.png" alt="iOS quick action menu with a static item and three dynamic actions" width="200"/></td>
     <td><img src="art/ios-launch.png" alt="Sample app on iOS showing the action that opened it after a cold start" width="200"/></td>
-    <td><img src="art/android-menu.png" alt="Android launcher shortcut menu with a static item and three dynamic actions" width="200"/></td>
+    <td><img src="art/android-menu.png" alt="Android app drawer shortcut menu with a static item and three dynamic actions" width="200"/></td>
     <td><img src="art/android-launch.png" alt="Sample app on Android showing the action that opened it after a cold start" width="200"/></td>
   </tr>
 </table>
@@ -43,8 +43,8 @@ comes back in the launch, on both platforms, whether the tap started the app or 
 ## Install
 
 ```kotlin
-implementation("io.github.androidpoet:jolt:0.1.0")          // core API + platform managers
-implementation("io.github.androidpoet:jolt-compose:0.1.0")  // rememberQuickActionsManager(), QuickActions(), OnQuickActionLaunch()
+implementation("io.github.androidpoet:quick-actions:0.1.0")          // core API + platform managers
+implementation("io.github.androidpoet:quick-actions-compose:0.1.0")  // rememberQuickActionsManager(), PublishQuickActions(), OnQuickActionLaunch()
 ```
 
 ## Usage
@@ -53,7 +53,7 @@ implementation("io.github.androidpoet:jolt-compose:0.1.0")  // rememberQuickActi
 val quickActions = rememberQuickActionsManager()
 
 // Publish. Re-publishing an equal list is free, so this can live at the root of the UI.
-QuickActions(
+PublishQuickActions(
     listOf(
         QuickAction("start-timer", "Start timer", subtitle = "25 minutes", icon = "timer", data = mapOf("route" to "timer")),
         QuickAction("log-water", "Log water", icon = "drop.fill", data = mapOf("route" to "water")),
@@ -85,7 +85,7 @@ and `false` when it reached a screen already showing.
 ### Android
 
 ```kotlin
-Jolt.androidConfig =
+QuickActions.androidConfig =
     AndroidQuickActionsConfig(
         defaultIconRes = R.drawable.ic_bolt,
         iconResolver = { key -> if (key == "timer") R.drawable.ic_timer else 0 },
@@ -93,17 +93,17 @@ Jolt.androidConfig =
 ```
 
 Icons are resolved through `iconResolver` at compile time, never by resource name, so shrunk release
-builds keep working. Shortcuts open your launcher Activity (or `targetActivity`) with `Jolt.ACTION`
-and the encoded action in `Jolt.EXTRA_ACTION`.
+builds keep working. Shortcuts open your launcher Activity (or `targetActivity`) with `QuickActions.ACTION`
+and the encoded action in `QuickActions.EXTRA_ACTION`.
 
-**Delivery.** `rememberQuickActionsManager()` calls `Jolt.attach(activity)` for you. Without Compose,
+**Delivery.** `rememberQuickActionsManager()` calls `QuickActions.attach(activity)` for you. Without Compose,
 call it once in `onCreate` of a `ComponentActivity`; for a plain `Activity`, call
-`Jolt.handleLaunchIntent(intent, savedInstanceState)` in `onCreate` and `Jolt.handleNewIntent(intent)`
+`QuickActions.handleLaunchIntent(intent, savedInstanceState)` in `onCreate` and `QuickActions.handleNewIntent(intent)`
 in `onNewIntent`. `attach` dispatches the launch intent once per Activity lifetime, ignores relaunches
 from Recents, and drops launches whose id is not a shortcut the platform knows for your app.
 
-Static shortcuts in `shortcuts.xml` are delivered too when their intent uses `Jolt.ACTION` and carries
-`Jolt.EXTRA_ACTION` with the action JSON (`{"id":"about","title":"About"}`).
+Static shortcuts in `shortcuts.xml` are delivered too when their intent uses `QuickActions.ACTION` and carries
+`QuickActions.EXTRA_ACTION` with the action JSON (`{"id":"about","title":"About"}`).
 
 `AndroidQuickActionsManager` adds `isRateLimited`, `canPin` and `requestPin(id)`.
 
@@ -111,13 +111,13 @@ Static shortcuts in `shortcuts.xml` are delivered too when their intent uses `Jo
 
 UIKit hands quick actions to the app delegate, which Kotlin cannot own, so one Swift file bridges it:
 
-1. Copy `swift/JoltDelegates.swift` into the app target and point its `import` at your Kotlin framework.
-2. Adopt it: `@UIApplicationDelegateAdaptor(JoltAppDelegate.self) var delegate` in your SwiftUI `App`,
+1. Copy `swift/QuickActionsDelegates.swift` into the app target and point its `import` at your Kotlin framework.
+2. Adopt it: `@UIApplicationDelegateAdaptor(QuickActionsAppDelegate.self) var delegate` in your SwiftUI `App`,
    or forward the three calls from your own delegates.
-3. Export the library from your framework so Swift sees `Jolt` by name:
+3. Export the library from your framework so Swift sees `QuickActions` by name:
 
 ```kotlin
-binaries.framework { export(project(":jolt")) }   // plus api(...) in commonMain
+binaries.framework { export(project(":quick-actions")) }   // plus api(...) in commonMain
 ```
 
 `icon` is an SF Symbol name. The Home Screen shows four items in total, static `Info.plist` items first,
@@ -140,7 +140,7 @@ so `maxActions` is four minus the static count.
 
 | Symptom | Cause |
 | --- | --- |
-| Actions publish but taps never arrive | Delivery not wired: `Jolt.isDeliveryInstalled` is `false`. Android: call `Jolt.attach`. iOS: adopt `JoltAppDelegate`. |
+| Actions publish but taps never arrive | Delivery not wired: `QuickActions.isDeliveryInstalled` is `false`. Android: call `QuickActions.attach`. iOS: adopt `QuickActionsAppDelegate`. |
 | iOS: `TooManyActions` with four items | Static `Info.plist` items count against the four slots. |
 | Android: the same launch arrives twice | You call both `attach` and `handleLaunchIntent`. Use one. |
 | Android: menu shows the subtitle only | Fixed in 0.1.0; the long label keeps the title. |

@@ -8,7 +8,7 @@ export default {
   github_link: {
     title: 'GitHub',
     type: 'page',
-    href: 'https://github.com/AndroidPoet/jolt-kmp',
+    href: 'https://github.com/AndroidPoet/quick-actions-kmp',
     newWindow: true,
   },
 }

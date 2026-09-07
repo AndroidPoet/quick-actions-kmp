@@ -6,9 +6,9 @@ const withNextra = nextra({
   defaultShowCopyCode: true,
 })
 
-// Served from https://androidpoet.github.io/jolt-kmp/ — a GitHub Pages project
+// Served from https://androidpoet.github.io/quick-actions-kmp/ — a GitHub Pages project
 // site lives under a sub-path, so set basePath/assetPrefix accordingly.
-const basePath = '/jolt-kmp'
+const basePath = '/quick-actions-kmp'
 
 export default withNextra({
   output: 'export',

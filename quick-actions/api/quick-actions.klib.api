@@ -1,0 +1,206 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64, wasmJs]
+// Alias: ios => [iosArm64, iosSimulatorArm64, iosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <quick-actions-kmp:quick-actions>
+abstract interface io.github.androidpoet.quickactions/QuickActionsManager { // io.github.androidpoet.quickactions/QuickActionsManager|null[0]
+    abstract val actions // io.github.androidpoet.quickactions/QuickActionsManager.actions|{}actions[0]
+        abstract fun <get-actions>(): kotlinx.coroutines.flow/StateFlow<kotlin.collections/List<io.github.androidpoet.quickactions/QuickAction>> // io.github.androidpoet.quickactions/QuickActionsManager.actions.<get-actions>|<get-actions>(){}[0]
+    abstract val isSupported // io.github.androidpoet.quickactions/QuickActionsManager.isSupported|{}isSupported[0]
+        abstract fun <get-isSupported>(): kotlin/Boolean // io.github.androidpoet.quickactions/QuickActionsManager.isSupported.<get-isSupported>|<get-isSupported>(){}[0]
+    abstract val launches // io.github.androidpoet.quickactions/QuickActionsManager.launches|{}launches[0]
+        abstract fun <get-launches>(): kotlinx.coroutines.flow/Flow<io.github.androidpoet.quickactions/QuickActionLaunch> // io.github.androidpoet.quickactions/QuickActionsManager.launches.<get-launches>|<get-launches>(){}[0]
+    abstract val maxActions // io.github.androidpoet.quickactions/QuickActionsManager.maxActions|{}maxActions[0]
+        abstract fun <get-maxActions>(): kotlin/Int // io.github.androidpoet.quickactions/QuickActionsManager.maxActions.<get-maxActions>|<get-maxActions>(){}[0]
+
+    abstract fun reportUsed(kotlin/String) // io.github.androidpoet.quickactions/QuickActionsManager.reportUsed|reportUsed(kotlin.String){}[0]
+    abstract suspend fun add(io.github.androidpoet.quickactions/QuickAction): io.github.androidpoet.quickactions/QuickActionsResult<kotlin/Unit> // io.github.androidpoet.quickactions/QuickActionsManager.add|add(io.github.androidpoet.quickactions.QuickAction){}[0]
+    abstract suspend fun clear(): io.github.androidpoet.quickactions/QuickActionsResult<kotlin/Unit> // io.github.androidpoet.quickactions/QuickActionsManager.clear|clear(){}[0]
+    abstract suspend fun remove(kotlin/Array<out kotlin/String>...): io.github.androidpoet.quickactions/QuickActionsResult<kotlin/Unit> // io.github.androidpoet.quickactions/QuickActionsManager.remove|remove(kotlin.Array<out|kotlin.String>...){}[0]
+    abstract suspend fun set(kotlin.collections/List<io.github.androidpoet.quickactions/QuickAction>): io.github.androidpoet.quickactions/QuickActionsResult<kotlin/Unit> // io.github.androidpoet.quickactions/QuickActionsManager.set|set(kotlin.collections.List<io.github.androidpoet.quickactions.QuickAction>){}[0]
+}
+
+final class io.github.androidpoet.quickactions/QuickAction { // io.github.androidpoet.quickactions/QuickAction|null[0]
+    constructor <init>(kotlin/String, kotlin/String, kotlin/String? = ..., kotlin/String? = ..., kotlin.collections/Map<kotlin/String, kotlin/String> = ...) // io.github.androidpoet.quickactions/QuickAction.<init>|<init>(kotlin.String;kotlin.String;kotlin.String?;kotlin.String?;kotlin.collections.Map<kotlin.String,kotlin.String>){}[0]
+
+    final val data // io.github.androidpoet.quickactions/QuickAction.data|{}data[0]
+        final fun <get-data>(): kotlin.collections/Map<kotlin/String, kotlin/String> // io.github.androidpoet.quickactions/QuickAction.data.<get-data>|<get-data>(){}[0]
+    final val icon // io.github.androidpoet.quickactions/QuickAction.icon|{}icon[0]
+        final fun <get-icon>(): kotlin/String? // io.github.androidpoet.quickactions/QuickAction.icon.<get-icon>|<get-icon>(){}[0]
+    final val id // io.github.androidpoet.quickactions/QuickAction.id|{}id[0]
+        final fun <get-id>(): kotlin/String // io.github.androidpoet.quickactions/QuickAction.id.<get-id>|<get-id>(){}[0]
+    final val subtitle // io.github.androidpoet.quickactions/QuickAction.subtitle|{}subtitle[0]
+        final fun <get-subtitle>(): kotlin/String? // io.github.androidpoet.quickactions/QuickAction.subtitle.<get-subtitle>|<get-subtitle>(){}[0]
+    final val title // io.github.androidpoet.quickactions/QuickAction.title|{}title[0]
+        final fun <get-title>(): kotlin/String // io.github.androidpoet.quickactions/QuickAction.title.<get-title>|<get-title>(){}[0]
+
+    final fun component1(): kotlin/String // io.github.androidpoet.quickactions/QuickAction.component1|component1(){}[0]
+    final fun component2(): kotlin/String // io.github.androidpoet.quickactions/QuickAction.component2|component2(){}[0]
+    final fun component3(): kotlin/String? // io.github.androidpoet.quickactions/QuickAction.component3|component3(){}[0]
+    final fun component4(): kotlin/String? // io.github.androidpoet.quickactions/QuickAction.component4|component4(){}[0]
+    final fun component5(): kotlin.collections/Map<kotlin/String, kotlin/String> // io.github.androidpoet.quickactions/QuickAction.component5|component5(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin.collections/Map<kotlin/String, kotlin/String> = ...): io.github.androidpoet.quickactions/QuickAction // io.github.androidpoet.quickactions/QuickAction.copy|copy(kotlin.String;kotlin.String;kotlin.String?;kotlin.String?;kotlin.collections.Map<kotlin.String,kotlin.String>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // io.github.androidpoet.quickactions/QuickAction.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // io.github.androidpoet.quickactions/QuickAction.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // io.github.androidpoet.quickactions/QuickAction.toString|toString(){}[0]
+}
+
+final class io.github.androidpoet.quickactions/QuickActionLaunch { // io.github.androidpoet.quickactions/QuickActionLaunch|null[0]
+    constructor <init>(io.github.androidpoet.quickactions/QuickAction, kotlin/Boolean, kotlin/Long) // io.github.androidpoet.quickactions/QuickActionLaunch.<init>|<init>(io.github.androidpoet.quickactions.QuickAction;kotlin.Boolean;kotlin.Long){}[0]
+
+    final val action // io.github.androidpoet.quickactions/QuickActionLaunch.action|{}action[0]
+        final fun <get-action>(): io.github.androidpoet.quickactions/QuickAction // io.github.androidpoet.quickactions/QuickActionLaunch.action.<get-action>|<get-action>(){}[0]
+    final val atEpochMillis // io.github.androidpoet.quickactions/QuickActionLaunch.atEpochMillis|{}atEpochMillis[0]
+        final fun <get-atEpochMillis>(): kotlin/Long // io.github.androidpoet.quickactions/QuickActionLaunch.atEpochMillis.<get-atEpochMillis>|<get-atEpochMillis>(){}[0]
+    final val createdScreen // io.github.androidpoet.quickactions/QuickActionLaunch.createdScreen|{}createdScreen[0]
+        final fun <get-createdScreen>(): kotlin/Boolean // io.github.androidpoet.quickactions/QuickActionLaunch.createdScreen.<get-createdScreen>|<get-createdScreen>(){}[0]
+
+    final fun component1(): io.github.androidpoet.quickactions/QuickAction // io.github.androidpoet.quickactions/QuickActionLaunch.component1|component1(){}[0]
+    final fun component2(): kotlin/Boolean // io.github.androidpoet.quickactions/QuickActionLaunch.component2|component2(){}[0]
+    final fun component3(): kotlin/Long // io.github.androidpoet.quickactions/QuickActionLaunch.component3|component3(){}[0]
+    final fun copy(io.github.androidpoet.quickactions/QuickAction = ..., kotlin/Boolean = ..., kotlin/Long = ...): io.github.androidpoet.quickactions/QuickActionLaunch // io.github.androidpoet.quickactions/QuickActionLaunch.copy|copy(io.github.androidpoet.quickactions.QuickAction;kotlin.Boolean;kotlin.Long){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // io.github.androidpoet.quickactions/QuickActionLaunch.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // io.github.androidpoet.quickactions/QuickActionLaunch.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // io.github.androidpoet.quickactions/QuickActionLaunch.toString|toString(){}[0]
+}
+
+final class io.github.androidpoet.quickactions/UnsupportedQuickActionsManager : io.github.androidpoet.quickactions/QuickActionsManager { // io.github.androidpoet.quickactions/UnsupportedQuickActionsManager|null[0]
+    constructor <init>() // io.github.androidpoet.quickactions/UnsupportedQuickActionsManager.<init>|<init>(){}[0]
+
+    final val actions // io.github.androidpoet.quickactions/UnsupportedQuickActionsManager.actions|{}actions[0]
+        final fun <get-actions>(): kotlinx.coroutines.flow/StateFlow<kotlin.collections/List<io.github.androidpoet.quickactions/QuickAction>> // io.github.androidpoet.quickactions/UnsupportedQuickActionsManager.actions.<get-actions>|<get-actions>(){}[0]
+    final val isSupported // io.github.androidpoet.quickactions/UnsupportedQuickActionsManager.isSupported|{}isSupported[0]
+        final fun <get-isSupported>(): kotlin/Boolean // io.github.androidpoet.quickactions/UnsupportedQuickActionsManager.isSupported.<get-isSupported>|<get-isSupported>(){}[0]
+    final val launches // io.github.androidpoet.quickactions/UnsupportedQuickActionsManager.launches|{}launches[0]
+        final fun <get-launches>(): kotlinx.coroutines.flow/Flow<io.github.androidpoet.quickactions/QuickActionLaunch> // io.github.androidpoet.quickactions/UnsupportedQuickActionsManager.launches.<get-launches>|<get-launches>(){}[0]
+    final val maxActions // io.github.androidpoet.quickactions/UnsupportedQuickActionsManager.maxActions|{}maxActions[0]
+        final fun <get-maxActions>(): kotlin/Int // io.github.androidpoet.quickactions/UnsupportedQuickActionsManager.maxActions.<get-maxActions>|<get-maxActions>(){}[0]
+
+    final fun reportUsed(kotlin/String) // io.github.androidpoet.quickactions/UnsupportedQuickActionsManager.reportUsed|reportUsed(kotlin.String){}[0]
+    final suspend fun add(io.github.androidpoet.quickactions/QuickAction): io.github.androidpoet.quickactions/QuickActionsResult<kotlin/Unit> // io.github.androidpoet.quickactions/UnsupportedQuickActionsManager.add|add(io.github.androidpoet.quickactions.QuickAction){}[0]
+    final suspend fun clear(): io.github.androidpoet.quickactions/QuickActionsResult<kotlin/Unit> // io.github.androidpoet.quickactions/UnsupportedQuickActionsManager.clear|clear(){}[0]
+    final suspend fun remove(kotlin/Array<out kotlin/String>...): io.github.androidpoet.quickactions/QuickActionsResult<kotlin/Unit> // io.github.androidpoet.quickactions/UnsupportedQuickActionsManager.remove|remove(kotlin.Array<out|kotlin.String>...){}[0]
+    final suspend fun set(kotlin.collections/List<io.github.androidpoet.quickactions/QuickAction>): io.github.androidpoet.quickactions/QuickActionsResult<kotlin/Unit> // io.github.androidpoet.quickactions/UnsupportedQuickActionsManager.set|set(kotlin.collections.List<io.github.androidpoet.quickactions.QuickAction>){}[0]
+}
+
+sealed class <#A: out kotlin/Any?> io.github.androidpoet.quickactions/QuickActionsResult { // io.github.androidpoet.quickactions/QuickActionsResult|null[0]
+    final class <#A1: kotlin/Any?> Success : io.github.androidpoet.quickactions/QuickActionsResult<#A1> { // io.github.androidpoet.quickactions/QuickActionsResult.Success|null[0]
+        constructor <init>(#A1) // io.github.androidpoet.quickactions/QuickActionsResult.Success.<init>|<init>(1:0){}[0]
+
+        final val value // io.github.androidpoet.quickactions/QuickActionsResult.Success.value|{}value[0]
+            final fun <get-value>(): #A1 // io.github.androidpoet.quickactions/QuickActionsResult.Success.value.<get-value>|<get-value>(){}[0]
+
+        final fun component1(): #A1 // io.github.androidpoet.quickactions/QuickActionsResult.Success.component1|component1(){}[0]
+        final fun copy(#A1 = ...): io.github.androidpoet.quickactions/QuickActionsResult.Success<#A1> // io.github.androidpoet.quickactions/QuickActionsResult.Success.copy|copy(1:0){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // io.github.androidpoet.quickactions/QuickActionsResult.Success.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // io.github.androidpoet.quickactions/QuickActionsResult.Success.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // io.github.androidpoet.quickactions/QuickActionsResult.Success.toString|toString(){}[0]
+    }
+
+    final class Failure : io.github.androidpoet.quickactions/QuickActionsResult<kotlin/Nothing> { // io.github.androidpoet.quickactions/QuickActionsResult.Failure|null[0]
+        constructor <init>(io.github.androidpoet.quickactions/QuickActionsException) // io.github.androidpoet.quickactions/QuickActionsResult.Failure.<init>|<init>(io.github.androidpoet.quickactions.QuickActionsException){}[0]
+
+        final val error // io.github.androidpoet.quickactions/QuickActionsResult.Failure.error|{}error[0]
+            final fun <get-error>(): io.github.androidpoet.quickactions/QuickActionsException // io.github.androidpoet.quickactions/QuickActionsResult.Failure.error.<get-error>|<get-error>(){}[0]
+
+        final fun component1(): io.github.androidpoet.quickactions/QuickActionsException // io.github.androidpoet.quickactions/QuickActionsResult.Failure.component1|component1(){}[0]
+        final fun copy(io.github.androidpoet.quickactions/QuickActionsException = ...): io.github.androidpoet.quickactions/QuickActionsResult.Failure // io.github.androidpoet.quickactions/QuickActionsResult.Failure.copy|copy(io.github.androidpoet.quickactions.QuickActionsException){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // io.github.androidpoet.quickactions/QuickActionsResult.Failure.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // io.github.androidpoet.quickactions/QuickActionsResult.Failure.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // io.github.androidpoet.quickactions/QuickActionsResult.Failure.toString|toString(){}[0]
+    }
+}
+
+sealed class io.github.androidpoet.quickactions/QuickActionsException : kotlin/Exception { // io.github.androidpoet.quickactions/QuickActionsException|null[0]
+    final val code // io.github.androidpoet.quickactions/QuickActionsException.code|{}code[0]
+        final fun <get-code>(): kotlin/Int // io.github.androidpoet.quickactions/QuickActionsException.code.<get-code>|<get-code>(){}[0]
+    open val cause // io.github.androidpoet.quickactions/QuickActionsException.cause|{}cause[0]
+        open fun <get-cause>(): kotlin/Throwable? // io.github.androidpoet.quickactions/QuickActionsException.cause.<get-cause>|<get-cause>(){}[0]
+    open val message // io.github.androidpoet.quickactions/QuickActionsException.message|{}message[0]
+        open fun <get-message>(): kotlin/String // io.github.androidpoet.quickactions/QuickActionsException.message.<get-message>|<get-message>(){}[0]
+
+    final class InvalidAction : io.github.androidpoet.quickactions/QuickActionsException { // io.github.androidpoet.quickactions/QuickActionsException.InvalidAction|null[0]
+        constructor <init>(kotlin/String, kotlin/Throwable? = ...) // io.github.androidpoet.quickactions/QuickActionsException.InvalidAction.<init>|<init>(kotlin.String;kotlin.Throwable?){}[0]
+    }
+
+    final class PayloadTooLarge : io.github.androidpoet.quickactions/QuickActionsException { // io.github.androidpoet.quickactions/QuickActionsException.PayloadTooLarge|null[0]
+        constructor <init>(kotlin/String, kotlin/Throwable? = ...) // io.github.androidpoet.quickactions/QuickActionsException.PayloadTooLarge.<init>|<init>(kotlin.String;kotlin.Throwable?){}[0]
+    }
+
+    final class PlatformError : io.github.androidpoet.quickactions/QuickActionsException { // io.github.androidpoet.quickactions/QuickActionsException.PlatformError|null[0]
+        constructor <init>(kotlin/String, kotlin/Throwable? = ...) // io.github.androidpoet.quickactions/QuickActionsException.PlatformError.<init>|<init>(kotlin.String;kotlin.Throwable?){}[0]
+    }
+
+    final class RateLimited : io.github.androidpoet.quickactions/QuickActionsException { // io.github.androidpoet.quickactions/QuickActionsException.RateLimited|null[0]
+        constructor <init>(kotlin/Throwable? = ...) // io.github.androidpoet.quickactions/QuickActionsException.RateLimited.<init>|<init>(kotlin.Throwable?){}[0]
+    }
+
+    final class TooManyActions : io.github.androidpoet.quickactions/QuickActionsException { // io.github.androidpoet.quickactions/QuickActionsException.TooManyActions|null[0]
+        constructor <init>(kotlin/Int, kotlin/Int, kotlin/Throwable? = ...) // io.github.androidpoet.quickactions/QuickActionsException.TooManyActions.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.Throwable?){}[0]
+
+        final val max // io.github.androidpoet.quickactions/QuickActionsException.TooManyActions.max|{}max[0]
+            final fun <get-max>(): kotlin/Int // io.github.androidpoet.quickactions/QuickActionsException.TooManyActions.max.<get-max>|<get-max>(){}[0]
+        final val requested // io.github.androidpoet.quickactions/QuickActionsException.TooManyActions.requested|{}requested[0]
+            final fun <get-requested>(): kotlin/Int // io.github.androidpoet.quickactions/QuickActionsException.TooManyActions.requested.<get-requested>|<get-requested>(){}[0]
+    }
+
+    final class Unsupported : io.github.androidpoet.quickactions/QuickActionsException { // io.github.androidpoet.quickactions/QuickActionsException.Unsupported|null[0]
+        constructor <init>(kotlin/String = ..., kotlin/Throwable? = ...) // io.github.androidpoet.quickactions/QuickActionsException.Unsupported.<init>|<init>(kotlin.String;kotlin.Throwable?){}[0]
+    }
+}
+
+final object io.github.androidpoet.quickactions/QuickActionCodec { // io.github.androidpoet.quickactions/QuickActionCodec|null[0]
+    final fun decode(kotlin/String): io.github.androidpoet.quickactions/QuickAction // io.github.androidpoet.quickactions/QuickActionCodec.decode|decode(kotlin.String){}[0]
+    final fun decodeOrNull(kotlin/String?): io.github.androidpoet.quickactions/QuickAction? // io.github.androidpoet.quickactions/QuickActionCodec.decodeOrNull|decodeOrNull(kotlin.String?){}[0]
+    final fun encode(io.github.androidpoet.quickactions/QuickAction): kotlin/String // io.github.androidpoet.quickactions/QuickActionCodec.encode|encode(io.github.androidpoet.quickactions.QuickAction){}[0]
+}
+
+final const val io.github.androidpoet.quickactions/QUICK_ACTIONS_RECOMMENDED_MAX // io.github.androidpoet.quickactions/QUICK_ACTIONS_RECOMMENDED_MAX|{}QUICK_ACTIONS_RECOMMENDED_MAX[0]
+    final fun <get-QUICK_ACTIONS_RECOMMENDED_MAX>(): kotlin/Int // io.github.androidpoet.quickactions/QUICK_ACTIONS_RECOMMENDED_MAX.<get-QUICK_ACTIONS_RECOMMENDED_MAX>|<get-QUICK_ACTIONS_RECOMMENDED_MAX>(){}[0]
+final const val io.github.androidpoet.quickactions/QUICK_ACTION_MAX_PAYLOAD_BYTES // io.github.androidpoet.quickactions/QUICK_ACTION_MAX_PAYLOAD_BYTES|{}QUICK_ACTION_MAX_PAYLOAD_BYTES[0]
+    final fun <get-QUICK_ACTION_MAX_PAYLOAD_BYTES>(): kotlin/Int // io.github.androidpoet.quickactions/QUICK_ACTION_MAX_PAYLOAD_BYTES.<get-QUICK_ACTION_MAX_PAYLOAD_BYTES>|<get-QUICK_ACTION_MAX_PAYLOAD_BYTES>(){}[0]
+
+final fun (io.github.androidpoet.quickactions/QuickAction).io.github.androidpoet.quickactions/validate(): io.github.androidpoet.quickactions/QuickActionsException? // io.github.androidpoet.quickactions/validate|validate@io.github.androidpoet.quickactions.QuickAction(){}[0]
+final fun (kotlin.collections/List<io.github.androidpoet.quickactions/QuickAction>).io.github.androidpoet.quickactions/validate(kotlin/Int): io.github.androidpoet.quickactions/QuickActionsException? // io.github.androidpoet.quickactions/validate|validate@kotlin.collections.List<io.github.androidpoet.quickactions.QuickAction>(kotlin.Int){}[0]
+final fun <#A: kotlin/Any?> (io.github.androidpoet.quickactions/QuickActionsResult<#A>).io.github.androidpoet.quickactions/errorOrNull(): io.github.androidpoet.quickactions/QuickActionsException? // io.github.androidpoet.quickactions/errorOrNull|errorOrNull@io.github.androidpoet.quickactions.QuickActionsResult<0:0>(){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (io.github.androidpoet.quickactions/QuickActionsResult<#A>).io.github.androidpoet.quickactions/getOrNull(): #A? // io.github.androidpoet.quickactions/getOrNull|getOrNull@io.github.androidpoet.quickactions.QuickActionsResult<0:0>(){0§<kotlin.Any?>}[0]
+
+// Targets: [ios]
+final class io.github.androidpoet.quickactions/IosQuickActionsManager : io.github.androidpoet.quickactions/QuickActionsManager { // io.github.androidpoet.quickactions/IosQuickActionsManager|null[0]
+    constructor <init>() // io.github.androidpoet.quickactions/IosQuickActionsManager.<init>|<init>(){}[0]
+
+    final val actions // io.github.androidpoet.quickactions/IosQuickActionsManager.actions|{}actions[0]
+        final fun <get-actions>(): kotlinx.coroutines.flow/StateFlow<kotlin.collections/List<io.github.androidpoet.quickactions/QuickAction>> // io.github.androidpoet.quickactions/IosQuickActionsManager.actions.<get-actions>|<get-actions>(){}[0]
+    final val isSupported // io.github.androidpoet.quickactions/IosQuickActionsManager.isSupported|{}isSupported[0]
+        final fun <get-isSupported>(): kotlin/Boolean // io.github.androidpoet.quickactions/IosQuickActionsManager.isSupported.<get-isSupported>|<get-isSupported>(){}[0]
+    final val launches // io.github.androidpoet.quickactions/IosQuickActionsManager.launches|{}launches[0]
+        final fun <get-launches>(): kotlinx.coroutines.flow/Flow<io.github.androidpoet.quickactions/QuickActionLaunch> // io.github.androidpoet.quickactions/IosQuickActionsManager.launches.<get-launches>|<get-launches>(){}[0]
+    final val maxActions // io.github.androidpoet.quickactions/IosQuickActionsManager.maxActions|{}maxActions[0]
+        final fun <get-maxActions>(): kotlin/Int // io.github.androidpoet.quickactions/IosQuickActionsManager.maxActions.<get-maxActions>|<get-maxActions>(){}[0]
+
+    final fun reportUsed(kotlin/String) // io.github.androidpoet.quickactions/IosQuickActionsManager.reportUsed|reportUsed(kotlin.String){}[0]
+    final suspend fun add(io.github.androidpoet.quickactions/QuickAction): io.github.androidpoet.quickactions/QuickActionsResult<kotlin/Unit> // io.github.androidpoet.quickactions/IosQuickActionsManager.add|add(io.github.androidpoet.quickactions.QuickAction){}[0]
+    final suspend fun clear(): io.github.androidpoet.quickactions/QuickActionsResult<kotlin/Unit> // io.github.androidpoet.quickactions/IosQuickActionsManager.clear|clear(){}[0]
+    final suspend fun remove(kotlin/Array<out kotlin/String>...): io.github.androidpoet.quickactions/QuickActionsResult<kotlin/Unit> // io.github.androidpoet.quickactions/IosQuickActionsManager.remove|remove(kotlin.Array<out|kotlin.String>...){}[0]
+    final suspend fun set(kotlin.collections/List<io.github.androidpoet.quickactions/QuickAction>): io.github.androidpoet.quickactions/QuickActionsResult<kotlin/Unit> // io.github.androidpoet.quickactions/IosQuickActionsManager.set|set(kotlin.collections.List<io.github.androidpoet.quickactions.QuickAction>){}[0]
+}
+
+// Targets: [ios]
+final object io.github.androidpoet.quickactions/QuickActions { // io.github.androidpoet.quickactions/QuickActions|null[0]
+    final val manager // io.github.androidpoet.quickactions/QuickActions.manager|{}manager[0]
+        final fun <get-manager>(): io.github.androidpoet.quickactions/IosQuickActionsManager // io.github.androidpoet.quickactions/QuickActions.manager.<get-manager>|<get-manager>(){}[0]
+
+    final var isDeliveryInstalled // io.github.androidpoet.quickactions/QuickActions.isDeliveryInstalled|{}isDeliveryInstalled[0]
+        final fun <get-isDeliveryInstalled>(): kotlin/Boolean // io.github.androidpoet.quickactions/QuickActions.isDeliveryInstalled.<get-isDeliveryInstalled>|<get-isDeliveryInstalled>(){}[0]
+
+    final fun handle(platform.UIKit/UIApplicationShortcutItem, kotlin/Boolean): io.github.androidpoet.quickactions/QuickActionLaunch // io.github.androidpoet.quickactions/QuickActions.handle|handle(platform.UIKit.UIApplicationShortcutItem;kotlin.Boolean){}[0]
+    final fun installDelivery() // io.github.androidpoet.quickactions/QuickActions.installDelivery|installDelivery(){}[0]
+}
+
+// Targets: [ios]
+final const val io.github.androidpoet.quickactions/QUICK_ACTIONS_USER_INFO_KEY // io.github.androidpoet.quickactions/QUICK_ACTIONS_USER_INFO_KEY|{}QUICK_ACTIONS_USER_INFO_KEY[0]
+    final fun <get-QUICK_ACTIONS_USER_INFO_KEY>(): kotlin/String // io.github.androidpoet.quickactions/QUICK_ACTIONS_USER_INFO_KEY.<get-QUICK_ACTIONS_USER_INFO_KEY>|<get-QUICK_ACTIONS_USER_INFO_KEY>(){}[0]

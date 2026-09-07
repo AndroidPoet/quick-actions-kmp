@@ -18,23 +18,23 @@ targets:
     info:
       path: iosApp/Info.plist
       properties:
-        CFBundleDisplayName: Jolt
+        CFBundleDisplayName: Quick Actions
         UILaunchScreen: {}
         # Compose on ProMotion iPhones needs this or it aborts at launch.
         CADisableMinimumFrameDurationOnPhone: true
-        # Scene-based lifecycle; quick actions arrive in JoltSceneDelegate.
+        # Scene-based lifecycle; quick actions arrive in QuickActionsSceneDelegate.
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
         # One static item, to show static items are delivered too and count against the four slots.
         UIApplicationShortcutItems:
           - UIApplicationShortcutItemType: static-about
-            UIApplicationShortcutItemTitle: About Jolt
+            UIApplicationShortcutItemTitle: About
             UIApplicationShortcutItemIconSymbolName: bolt.fill
             UIApplicationShortcutItemUserInfo:
               route: about
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.example.jolt.sample
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.quickactions.sample
         FRAMEWORK_SEARCH_PATHS: $(SRCROOT)/../build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)
         OTHER_LDFLAGS: $(inherited) -framework ComposeApp
     preBuildScripts:

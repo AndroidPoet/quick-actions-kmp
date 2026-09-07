@@ -1,0 +1,9 @@
+public final class io/github/androidpoet/quickactions/compose/QuickActionsEffectsKt {
+	public static final fun OnQuickActionLaunch (Lio/github/androidpoet/quickactions/QuickActionsManager;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun PublishQuickActions (Ljava/util/List;Lio/github/androidpoet/quickactions/QuickActionsManager;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class io/github/androidpoet/quickactions/compose/RememberQuickActionsManager_androidKt {
+	public static final fun rememberQuickActionsManager (Landroidx/compose/runtime/Composer;I)Lio/github/androidpoet/quickactions/QuickActionsManager;
+}
+

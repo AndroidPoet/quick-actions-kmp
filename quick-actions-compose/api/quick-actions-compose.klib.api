@@ -1,0 +1,11 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <quick-actions-kmp:quick-actions-compose>
+final fun io.github.androidpoet.quickactions.compose/OnQuickActionLaunch(io.github.androidpoet.quickactions/QuickActionsManager?, kotlin/Function1<io.github.androidpoet.quickactions/QuickActionLaunch, kotlin/Unit>, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // io.github.androidpoet.quickactions.compose/OnQuickActionLaunch|OnQuickActionLaunch(io.github.androidpoet.quickactions.QuickActionsManager?;kotlin.Function1<io.github.androidpoet.quickactions.QuickActionLaunch,kotlin.Unit>;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun io.github.androidpoet.quickactions.compose/PublishQuickActions(kotlin.collections/List<io.github.androidpoet.quickactions/QuickAction>, io.github.androidpoet.quickactions/QuickActionsManager?, kotlin/Function1<io.github.androidpoet.quickactions/QuickActionsResult<kotlin/Unit>, kotlin/Unit>?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // io.github.androidpoet.quickactions.compose/PublishQuickActions|PublishQuickActions(kotlin.collections.List<io.github.androidpoet.quickactions.QuickAction>;io.github.androidpoet.quickactions.QuickActionsManager?;kotlin.Function1<io.github.androidpoet.quickactions.QuickActionsResult<kotlin.Unit>,kotlin.Unit>?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun io.github.androidpoet.quickactions.compose/rememberQuickActionsManager(androidx.compose.runtime/Composer?, kotlin/Int): io.github.androidpoet.quickactions/QuickActionsManager // io.github.androidpoet.quickactions.compose/rememberQuickActionsManager|rememberQuickActionsManager(androidx.compose.runtime.Composer?;kotlin.Int){}[0]
