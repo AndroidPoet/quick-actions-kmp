@@ -43,102 +43,86 @@ comes back in the launch, on both platforms, whether the tap started the app or 
 ## Install
 
 ```kotlin
-implementation("io.github.androidpoet:quick-actions:0.2.0")          // core API + platform managers
-implementation("io.github.androidpoet:quick-actions-compose:0.2.0")  // rememberQuickActionsManager(), PublishQuickActions(), OnQuickActionLaunch()
-```
-
-## Usage
-
-```kotlin
-val quickActions = rememberQuickActionsManager()
-
-// Publish. Re-publishing an equal list is free, so this can live at the root of the UI.
-PublishQuickActions(
-    listOf(
-        QuickAction("start-timer", "Start timer", subtitle = "25 minutes", icon = "timer", data = mapOf("route" to "timer")),
-        QuickAction("log-water", "Log water", icon = "drop.fill", data = mapOf("route" to "water")),
-    ),
-    quickActions,
-) { result -> if (result is QuickActionsResult.Failure) log(result.error.code, result.error.message) }
-
-// Receive. One place, at the root; the launch that started the app is buffered until this runs.
-OnQuickActionLaunch(quickActions) { launch ->
-    navigate(launch.action.data["route"])
-    quickActions.reportUsed(launch.action.id)
+commonMain.dependencies {
+    implementation("io.github.androidpoet:quick-actions:0.2.0")
+    implementation("io.github.androidpoet:quick-actions-compose:0.2.0")   // Compose helpers
 }
 ```
 
-Without Compose, use the platform class directly (`AndroidQuickActionsManager`, `IosQuickActionsManager`)
-and collect `manager.launches`.
+That is the whole setup. No Swift, no `export`, no manifest edits.
 
-`launch.createdScreen` is `true` when the tap created the screen (Android `onCreate`, iOS scene connect)
-and `false` when it reached a screen already showing.
+## Use
+
+```kotlin
+@Composable
+fun App() {
+    val quickActions = rememberQuickActionsManager()
+
+    // 1. Publish the menu. Re-publishing an equal list is free, so keep this at the root.
+    PublishQuickActions(
+        listOf(
+            QuickAction("start-timer", "Start timer", subtitle = "25 minutes", icon = "timer", data = mapOf("route" to "timer")),
+            QuickAction("log-water", "Log water", icon = "drop.fill", data = mapOf("route" to "water")),
+        ),
+        quickActions,
+    )
+
+    // 2. Receive the tap. The tap that started the app is held until this runs.
+    OnQuickActionLaunch(quickActions) { launch ->
+        navigate(launch.action.data["route"])
+        quickActions.reportUsed(launch.action.id)
+    }
+}
+```
+
+`icon` is an SF Symbol name on iOS. On Android, map it to a drawable once at start-up (skip this and every
+action shows the app icon):
+
+```kotlin
+QuickActions.androidConfig = AndroidQuickActionsConfig(
+    iconResolver = { key -> when (key) { "timer" -> R.drawable.ic_timer; "drop.fill" -> R.drawable.ic_drop; else -> 0 } },
+)
+```
+
+Without Compose: `IosQuickActionsManager()` / `AndroidQuickActionsManager(context)`, collect `launches`, and on
+Android call `QuickActions.attach(activity)` once in `onCreate`.
+
+## What you get
+
+| | |
+| --- | --- |
+| `set` / `add` / `remove` / `clear` | Replace or edit the dynamic items; results are typed, never exceptions |
+| `actions` | `StateFlow` of what is published, restored from the platform |
+| `launches` | Every tap, as the `QuickAction` you published, with `createdScreen` and a timestamp |
+| `maxActions` | Free slots: the platform ceiling minus static items |
+| `reportUsed(id)` | Feeds Android launcher ranking; no-op on iOS |
+
+`launch.createdScreen` is `true` when the tap started the screen and `false` when it reached one already showing.
 
 ## Platforms
 
-| Platform | Surface | Floor | One-time setup |
+| Platform | Surface | Floor | App-side setup |
 | --- | --- | --- | --- |
-| Android | Launcher long-press menu (dynamic shortcuts) | API 26 | None with Compose; otherwise one call in your Activity (below) |
+| Android | Launcher long-press menu (dynamic shortcuts) | API 26 | None with Compose, else `QuickActions.attach(activity)` |
 | iOS | Home Screen quick actions | iOS 13 | None |
-| JVM, macOS, Wasm | `UnsupportedQuickActionsManager` so shared code compiles | — | — |
+| JVM, macOS, Wasm | `UnsupportedQuickActionsManager`, so shared code compiles | — | — |
 
-### Android
-
-```kotlin
-QuickActions.androidConfig =
-    AndroidQuickActionsConfig(
-        defaultIconRes = R.drawable.ic_bolt,
-        iconResolver = { key -> if (key == "timer") R.drawable.ic_timer else 0 },
-    )
-```
-
-Icons are resolved through `iconResolver` at compile time, never by resource name, so shrunk release
-builds keep working. Shortcuts open your launcher Activity (or `targetActivity`) with `QuickActions.ACTION`
-and the encoded action in `QuickActions.EXTRA_ACTION`.
-
-**Delivery.** `rememberQuickActionsManager()` calls `QuickActions.attach(activity)` for you. Without Compose,
-call it once in `onCreate` of a `ComponentActivity`; for a plain `Activity`, call
-`QuickActions.handleLaunchIntent(intent, savedInstanceState)` in `onCreate` and `QuickActions.handleNewIntent(intent)`
-in `onNewIntent`. `attach` dispatches the launch intent once per Activity lifetime, ignores relaunches
-from Recents, and drops launches whose id is not a shortcut the platform knows for your app.
-
-Static shortcuts in `shortcuts.xml` are delivered too when their intent uses `QuickActions.ACTION` and carries
-`QuickActions.EXTRA_ACTION` with the action JSON (`{"id":"about","title":"About"}`).
-
-`AndroidQuickActionsManager` adds `isRateLimited`, `canPin` and `requestPin(id)`.
-
-### iOS
-
-Nothing to wire. When the binary loads, the library hooks the app and scene delegates the app already
-uses, so taps reach `launches` in SwiftUI-lifecycle apps, in UIKit apps with their own delegates, and in
-apps without a scene manifest. Delegate methods you implement yourself keep running. No Swift file, no
-`export`, no delegate adaptor.
-
-`icon` is an SF Symbol name. The Home Screen shows four items in total, static `Info.plist` items first,
-so `maxActions` is four minus the static count.
+On iOS the library hooks the app and scene delegates when the binary loads, so SwiftUI apps, UIKit apps
+with their own delegates and apps without a scene manifest all work as they are; your own delegate methods
+keep running. On Android, `attach` delivers the launch intent once per Activity lifetime, ignores relaunches
+from Recents and drops intents whose id is not a shortcut the platform knows for your app. Static items
+(`Info.plist`, `shortcuts.xml` with `QuickActions.ACTION`) are delivered too.
 
 ## Things to know
 
-- **Four visible slots.** Both home screens display about four items including static ones. Android
-  accepts more (`maxActions` is usually 14) but hides the rest; iOS rejects the fifth with `TooManyActions`.
-- **Android long label.** Launchers show the long label when it fits, so the subtitle is appended to the
-  title (`Start timer · 25 minutes`) rather than replacing it.
-- **Untrusted `data`.** The payload travels through an exported Activity. Use it to pick a route; never
-  execute it as a URL or command.
-- **One collector.** Each launch is delivered to exactly one collector of `launches`. Collect at the root.
+- **Four visible slots.** Both home screens show about four items including static ones. iOS rejects the
+  fifth with `TooManyActions`; Android accepts more (`maxActions` is usually 14) and hides the rest.
+- **Android long label** is `title · subtitle`, because launchers show the long label when it fits.
+- **`data` is untrusted.** It travels through an exported Activity. Use it to pick a route; never run it.
+- **One collector.** Each launch reaches exactly one collector of `launches`. Collect at the root.
 - **Rate limiting.** Android refuses shortcut changes from a backgrounded app; you get `RateLimited`.
-  Publishing an equal list short-circuits before that check.
-- **Pinned and static items** can arrive in `launches` with ids that are not in `actions`.
 
-### Troubleshooting
-
-| Symptom | Cause |
-| --- | --- |
-| Android: actions publish but taps never arrive | `QuickActions.attach` was never called; Compose does it in `rememberQuickActionsManager()`. |
-| iOS: `QuickActions.isDeliveryInstalled` is `false` | The library is not linked into the process, which only happens in a test host. In an app it is always `true`. |
-| iOS: `TooManyActions` with four items | Static `Info.plist` items count against the four slots. |
-| Android: the same launch arrives twice | You call both `attach` and `handleLaunchIntent`. Use one. |
-| Android: menu shows the subtitle only | Fixed in 0.1.0; the long label keeps the title. |
+Full reference, Android options and the iOS hook details: https://androidpoet.github.io/quick-actions-kmp/
 
 ## Sample
 

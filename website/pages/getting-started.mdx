@@ -38,10 +38,19 @@ fun App() {
 
 Keep both helpers at the root of the UI: publishing an equal list is free, and each launch reaches one collector.
 
+## Icons
+
+`icon` is an SF Symbol name on iOS. On Android, map it to a drawable once at start-up; skip this and every
+action shows the app icon.
+
+```kotlin
+QuickActions.androidConfig = AndroidQuickActionsConfig(
+    iconResolver = { key -> when (key) { "timer" -> R.drawable.ic_timer; "drop.fill" -> R.drawable.ic_drop; else -> 0 } },
+)
+```
+
 ## Platform setup
 
-- **Android**: none when you use `rememberQuickActionsManager()`. Otherwise call `QuickActions.attach(activity)` once in
-  `onCreate`. Set `QuickActions.androidConfig` for icons. See [Android](/android).
-- **iOS**: nothing. Delivery hooks itself in when the binary loads. See [iOS](/ios).
-
-`QuickActions.isDeliveryInstalled` tells you the wiring is in place.
+None. iOS hooks delivery in when the binary loads ([details](/ios)). Android is wired by
+`rememberQuickActionsManager()`; without Compose call `QuickActions.attach(activity)` once in `onCreate`
+([details](/android)).

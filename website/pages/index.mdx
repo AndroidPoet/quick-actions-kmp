@@ -10,7 +10,8 @@ import { Hero } from '../components/Hero'
 **quick-actions-kmp** gives you one typed API in `commonMain` to publish the menu that appears when the user
 long-presses your app icon, and to receive the tap. iOS uses `UIApplicationShortcutItem`; Android uses
 `ShortcutManagerCompat` dynamic shortcuts. The `QuickAction` you published comes back in the launch on
-both platforms, whether the tap started the app or reached it running.
+both platforms, whether the tap started the app or reached it running. Add the dependency and call it:
+there is no Swift, no `export` and no manifest to touch.
 
 ```kotlin
 val quickActions = rememberQuickActionsManager()
@@ -31,6 +32,7 @@ OnQuickActionLaunch(quickActions) { launch -> navigate(launch.action.id) }
 
 ## Why quick-actions-kmp
 
+- **Nothing to wire.** One dependency; iOS delivery hooks itself in, Android is wired by `rememberQuickActionsManager()`.
 - **Native surfaces, one call site.** Quick actions and launcher shortcuts behind one interface.
 - **The launch round-trips.** Each action travels inside the platform payload, so a tap decodes back to the
   same `QuickAction`, with its `data`, on both platforms.

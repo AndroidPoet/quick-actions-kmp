@@ -17,6 +17,7 @@ export function Hero() {
       <p className="pk-hero-sub">
         Publish the long-press icon menu and receive the tap from commonMain. iOS renders Home Screen
         quick actions; Android renders launcher shortcuts. The same action comes back on launch.
+        One dependency, nothing to wire.
       </p>
       <div className="pk-hero-cta">
         <Link href="/getting-started" className="pk-btn pk-btn-primary">
