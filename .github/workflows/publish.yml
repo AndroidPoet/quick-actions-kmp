@@ -23,7 +23,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Verify build before publishing
-        run: ./gradlew apiCheck detekt jvmTest
+        run: ./gradlew apiCheck detekt jvmTest :quick-actions:compileIosMainKotlinMetadata :quick-actions-compose:compileIosMainKotlinMetadata
 
       # --no-configuration-cache: the vanniktech publish tasks are not yet
       # configuration-cache compatible; remove once they are.

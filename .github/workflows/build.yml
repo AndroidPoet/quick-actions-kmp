@@ -54,6 +54,7 @@ jobs:
             tasks: >-
               compileKotlinIosArm64 compileKotlinIosSimulatorArm64
               compileKotlinMacosArm64 compileKotlinMacosX64
+              :quick-actions:compileIosMainKotlinMetadata :quick-actions-compose:compileIosMainKotlinMetadata
           - os: ubuntu-latest
             name: jvm-wasm
             tasks: compileKotlinJvm compileKotlinWasmJs
