@@ -164,12 +164,21 @@ public class AndroidQuickActionsManager(context: Context, config: AndroidQuickAc
 
 ```kotlin
 public object QuickActions {
-    /** Called by the Swift glue with the tapped item. Returns true when handled (always, for non-nil). */
-    public fun handle(item: UIApplicationShortcutItem, coldStart: Boolean): Boolean
+    /** True once the load-time delivery hooks are installed (always, in an app process). */
+    public val isDeliveryInstalled: Boolean
+    public val manager: IosQuickActionsManager
 }
 public class IosQuickActionsManager() : QuickActionsManager
 ```
-- `QuickActions.installDelivery()` is called by the glue's init; `QuickActions.isDeliveryInstalled` exposes it.
+- No app-side wiring. A cinterop Objective-C unit (`src/nativeInterop/cinterop/quickActionsHook.def`)
+  runs a load-time constructor that wraps `-[UIApplication setDelegate:]`, `-[UIScene setDelegate:]` and
+  `-[UISceneConfiguration delegateClass]`; through them it adds or wraps
+  `application:performActionForShortcutItem:completionHandler:` on the app delegate class and
+  `scene:willConnectToSession:options:` + `windowScene:performActionForShortcutItem:completionHandler:` on the
+  scene delegate class before UIKit computes its responds-to flags. `UIApplicationDidFinishLaunchingNotification`
+  supplies the launch-options item for apps without scenes. Existing implementations are kept under
+  `qa_original_<selector>` and called. Items are handed to Kotlin through a block set by the first
+  `IosQuickActionsManager`; earlier items queue. The launching item is delivered once (same `type` within 3 s).
 - The platform list is read lazily on the main thread (`dispatch_sync` when constructed elsewhere), never eagerly
   off-main.
 - Mapping: `UIApplicationShortcutItem(type = id, localizedTitle = title, localizedSubtitle = subtitle,
@@ -180,12 +189,10 @@ public class IosQuickActionsManager() : QuickActionsManager
   Never throws; `PlatformError` only if the main-thread hop fails.
 - Restore: on construction read `UIApplication.shared.shortcutItems` → decode `userInfo["quickActions"]`; items without
   it (foreign/static) are ignored for `actions`.
-- **Delivery.** `handle(item)` decodes `userInfo["quickActions"]`; a static item without it becomes
+- **Delivery.** The hook hands every item to internal `QuickActions.handle(item, createdScreen)`, which decodes
+  `userInfo["quickActions"]`; a static item without it becomes
   `QuickAction(id = type, title = localizedTitle, subtitle = localizedSubtitle, data = userInfo strings)`.
-  Shipped glue `swift/QuickActionsDelegates.swift`: `QuickActionsAppDelegate` (`configurationForConnecting` → `QuickActionsSceneDelegate`),
-  `QuickActionsSceneDelegate` (`scene(_:willConnectTo:)` → `connectionOptions.shortcutItem`, coldStart true;
-  `windowScene(_:performActionFor:)` → coldStart false). SwiftUI apps add
-  `@UIApplicationDelegateAdaptor(QuickActionsAppDelegate.self) var delegate`. UIKit apps forward from their own delegates.
+  `createdScreen` is true from `connectionOptions.shortcutItem` and the launch options, false from `performActionFor`.
 - `reportUsed` no-op.
 
 ### 3.3 JVM desktop, macOS, Wasm
@@ -217,6 +224,10 @@ Verified 2026-09-07: Android on the API 36 AVD (all steps, from the real launche
 simulator, iOS 26.5 (cold tap after `simctl terminate`, warm tap, static `Info.plist` item synthesised, four
 items rejected with `TooManyActions` while one static item is declared).
 
+Verified 2026-09-08 (0.2.0, no Swift glue, no `export`, stock SwiftUI `App`): iOS cold tap after
+`simctl terminate` (`createdScreen=true`), warm tap and static item (`createdScreen=false`), all from the
+Home Screen menu on the iPhone 17 simulator.
+
 ## 6. Out of scope for 0.1.0
 Pinned-shortcut UI beyond `requestPin`; Android launcher-specific icon shaping; App Intents / App Shortcuts
 (Siri); macOS Dock menus; localisation helpers.
@@ -231,7 +242,7 @@ Critic: skeptical staff mobile engineer lens, 12 findings, all dispositioned.
 | 3 | `handleIntent` cannot express cold vs warm; "cold start" misdefined | **Fixed**: split into `handleLaunchIntent` / `handleNewIntent`; field renamed `createdScreen` with a precise definition |
 | 4 | Payload trusted through an exported Activity | **Fixed**: `attach` drops launches whose id no shortcut (dynamic, pinned, manifest) carries; `data` documented as untrusted; raw handle* documented as unverified |
 | 5 | iOS restore off the main thread | **Fixed**: lazy seed; the store hops to main with `dispatch_sync` when needed |
-| 6 | Non-scene UIKit path, double dispatch, missing export docs | **Fixed** in glue template + README/ios docs: both paths, `return false` rule, placeholder import, `export()` rule |
+| 6 | Non-scene UIKit path, double dispatch, missing export docs | **Superseded in 0.2.0**: the Swift glue, `export` and adaptor are gone; load-time hooks cover scene and non-scene apps and deduplicate the launching item |
 | 7 | Multiple managers, one channel | **Fixed** (partly): one process-wide instance per platform behind `rememberQuickActionsManager()` so `actions` is shared; `launches` stays single-collector by design and the docs say collect once at the root. Rejected: replay/consume semantics, which duplicate handling instead |
 | 8 | Declarative helper re-publishes and can surface `RateLimited` for a no-op | **Fixed**: `set` short-circuits on structural equality before the rate-limit check |
 | 9 | Pinned/static launches carry ids absent from `actions` | **Fixed** in docs; restore sorted by rank. Rejected: `pinned` flow, out of scope for 0.1.0 |

@@ -22,7 +22,7 @@ targets:
         UILaunchScreen: {}
         # Compose on ProMotion iPhones needs this or it aborts at launch.
         CADisableMinimumFrameDurationOnPhone: true
-        # Scene-based lifecycle; quick actions arrive in QuickActionsSceneDelegate.
+        # Scene-based lifecycle, as in a stock SwiftUI app; the library hooks delivery itself.
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
         # One static item, to show static items are delivered too and count against the four slots.

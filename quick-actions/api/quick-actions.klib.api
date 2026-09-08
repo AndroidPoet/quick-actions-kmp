@@ -191,14 +191,10 @@ final class io.github.androidpoet.quickactions/IosQuickActionsManager : io.githu
 
 // Targets: [ios]
 final object io.github.androidpoet.quickactions/QuickActions { // io.github.androidpoet.quickactions/QuickActions|null[0]
+    final val isDeliveryInstalled // io.github.androidpoet.quickactions/QuickActions.isDeliveryInstalled|{}isDeliveryInstalled[0]
+        final fun <get-isDeliveryInstalled>(): kotlin/Boolean // io.github.androidpoet.quickactions/QuickActions.isDeliveryInstalled.<get-isDeliveryInstalled>|<get-isDeliveryInstalled>(){}[0]
     final val manager // io.github.androidpoet.quickactions/QuickActions.manager|{}manager[0]
         final fun <get-manager>(): io.github.androidpoet.quickactions/IosQuickActionsManager // io.github.androidpoet.quickactions/QuickActions.manager.<get-manager>|<get-manager>(){}[0]
-
-    final var isDeliveryInstalled // io.github.androidpoet.quickactions/QuickActions.isDeliveryInstalled|{}isDeliveryInstalled[0]
-        final fun <get-isDeliveryInstalled>(): kotlin/Boolean // io.github.androidpoet.quickactions/QuickActions.isDeliveryInstalled.<get-isDeliveryInstalled>|<get-isDeliveryInstalled>(){}[0]
-
-    final fun handle(platform.UIKit/UIApplicationShortcutItem, kotlin/Boolean): io.github.androidpoet.quickactions/QuickActionLaunch // io.github.androidpoet.quickactions/QuickActions.handle|handle(platform.UIKit.UIApplicationShortcutItem;kotlin.Boolean){}[0]
-    final fun installDelivery() // io.github.androidpoet.quickactions/QuickActions.installDelivery|installDelivery(){}[0]
 }
 
 // Targets: [ios]

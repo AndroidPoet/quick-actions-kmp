@@ -1,0 +1,132 @@
+language = Objective-C
+package = io.github.androidpoet.quickactions.internal.hook
+compilerOpts = -fobjc-arc
+linkerOpts = -framework Foundation -framework UIKit
+---
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+#import <objc/message.h>
+#import <objc/runtime.h>
+
+// Load-time delivery hooks. UIKit hands quick actions only to the app delegate and
+// the scene delegate, which belong to the app, so this file wires itself into
+// whichever delegate classes the app ends up using before UIKit inspects them:
+//   - `-[UIApplication setDelegate:]`            → application:performActionForShortcutItem:completionHandler:
+//   - `-[UISceneConfiguration delegateClass]`
+//     and `-[UIScene setDelegate:]`              → scene:willConnectToSession:options:
+//                                                  windowScene:performActionForShortcutItem:completionHandler:
+//   - UIApplicationDidFinishLaunchingNotification → UIApplicationLaunchOptionsShortcutItemKey
+// Methods the delegate already implements are wrapped and still called; missing ones are added.
+
+typedef void (^QAHookHandler)(UIApplicationShortcutItem *_Nonnull item, BOOL createdScreen);
+
+/// Registers the receiver of tapped items. Items that arrived earlier are flushed at once. Main thread.
+void qa_hook_set_handler(QAHookHandler _Nullable handler);
+/// True once the load-time hooks are installed.
+BOOL qa_hook_is_armed(void);
+
+static QAHookHandler _qaHandler;
+static NSMutableArray<NSArray *> *_qaPending;
+static NSString *_qaLastType;
+static NSTimeInterval _qaLastAt;
+static BOOL _qaArmed;
+
+static void qa_deliver(UIApplicationShortcutItem *item, BOOL created) {
+    if (item == nil) return;
+    NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
+    // The item that launched the app reaches more than one hook (launch options, scene
+    // connection, then performAction for apps without scenes). Deliver it once.
+    if (_qaLastType != nil && [_qaLastType isEqualToString:item.type] && now - _qaLastAt < 3.0) return;
+    _qaLastType = [item.type copy];
+    _qaLastAt = now;
+    if (_qaHandler != nil) {
+        _qaHandler(item, created);
+    } else {
+        if (_qaPending == nil) _qaPending = [NSMutableArray new];
+        [_qaPending addObject:@[item, @(created)]];
+    }
+}
+
+void qa_hook_set_handler(QAHookHandler handler) {
+    _qaHandler = [handler copy];
+    if (_qaHandler == nil) return;
+    NSArray *pending = _qaPending;
+    _qaPending = nil;
+    for (NSArray *entry in pending) _qaHandler(entry[0], [entry[1] boolValue]);
+}
+
+BOOL qa_hook_is_armed(void) { return _qaArmed; }
+
+static SEL qa_original(SEL sel) {
+    return NSSelectorFromString([@"qa_original_" stringByAppendingString:NSStringFromSelector(sel)]);
+}
+
+/// Adds `imp` for `sel` on `cls`; an existing implementation is kept under qa_original_<sel> and still called.
+static void qa_install(Class cls, SEL sel, IMP imp, const char *types) {
+    if (cls == Nil) return;
+    Method existing = class_getInstanceMethod(cls, sel);
+    if (existing == NULL) {
+        class_addMethod(cls, sel, imp, types);
+        return;
+    }
+    if (class_getInstanceMethod(cls, qa_original(sel)) != NULL) return;  // already wrapped
+    class_addMethod(cls, qa_original(sel), method_getImplementation(existing), method_getTypeEncoding(existing));
+    // The method may come from a superclass; add on this class first, then swap if it was local.
+    if (!class_addMethod(cls, sel, imp, types)) method_setImplementation(existing, imp);
+}
+
+static void qa_performAction(id self, SEL _cmd, id host, UIApplicationShortcutItem *item, void (^completion)(BOOL)) {
+    qa_deliver(item, NO);
+    SEL orig = qa_original(_cmd);
+    if ([self respondsToSelector:orig]) {
+        ((void (*)(id, SEL, id, id, id))objc_msgSend)(self, orig, host, item, completion);
+    } else if (completion != nil) {
+        completion(YES);
+    }
+}
+
+static void qa_willConnect(id self, SEL _cmd, UIScene *scene, UISceneSession *session, UISceneConnectionOptions *options) {
+    SEL orig = qa_original(_cmd);
+    if ([self respondsToSelector:orig]) ((void (*)(id, SEL, id, id, id))objc_msgSend)(self, orig, scene, session, options);
+    qa_deliver(options.shortcutItem, YES);
+}
+
+static void qa_hook_scene_delegate_class(Class cls) {
+    if (cls == Nil || cls == [NSObject class]) return;
+    qa_install(cls, @selector(scene:willConnectToSession:options:), (IMP)qa_willConnect, "v@:@@@");
+    qa_install(cls, @selector(windowScene:performActionForShortcutItem:completionHandler:), (IMP)qa_performAction, "v@:@@@?");
+}
+
+static void qa_hook_app_delegate_class(Class cls) {
+    if (cls == Nil) return;
+    qa_install(cls, @selector(application:performActionForShortcutItem:completionHandler:), (IMP)qa_performAction, "v@:@@@?");
+}
+
+static void qa_application_setDelegate(id self, SEL _cmd, id delegate) {
+    qa_hook_app_delegate_class([delegate class]);
+    ((void (*)(id, SEL, id))objc_msgSend)(self, qa_original(_cmd), delegate);
+}
+
+static void qa_scene_setDelegate(id self, SEL _cmd, id delegate) {
+    qa_hook_scene_delegate_class([delegate class]);
+    ((void (*)(id, SEL, id))objc_msgSend)(self, qa_original(_cmd), delegate);
+}
+
+static Class qa_configuration_delegateClass(id self, SEL _cmd) {
+    Class cls = ((Class (*)(id, SEL))objc_msgSend)(self, qa_original(_cmd));
+    qa_hook_scene_delegate_class(cls);
+    return cls;
+}
+
+__attribute__((constructor)) static void qa_hook_arm(void) {
+    qa_install([UIApplication class], @selector(setDelegate:), (IMP)qa_application_setDelegate, "v@:@");
+    qa_install([UIScene class], @selector(setDelegate:), (IMP)qa_scene_setDelegate, "v@:@");
+    qa_install([UISceneConfiguration class], @selector(delegateClass), (IMP)qa_configuration_delegateClass, "#@:");
+    [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidFinishLaunchingNotification
+                                                      object:nil
+                                                       queue:[NSOperationQueue mainQueue]
+                                                  usingBlock:^(NSNotification *note) {
+        qa_deliver(note.userInfo[UIApplicationLaunchOptionsShortcutItemKey], YES);
+    }];
+    _qaArmed = YES;
+}

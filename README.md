@@ -43,8 +43,8 @@ comes back in the launch, on both platforms, whether the tap started the app or 
 ## Install
 
 ```kotlin
-implementation("io.github.androidpoet:quick-actions:0.1.0")          // core API + platform managers
-implementation("io.github.androidpoet:quick-actions-compose:0.1.0")  // rememberQuickActionsManager(), PublishQuickActions(), OnQuickActionLaunch()
+implementation("io.github.androidpoet:quick-actions:0.2.0")          // core API + platform managers
+implementation("io.github.androidpoet:quick-actions-compose:0.2.0")  // rememberQuickActionsManager(), PublishQuickActions(), OnQuickActionLaunch()
 ```
 
 ## Usage
@@ -79,7 +79,7 @@ and `false` when it reached a screen already showing.
 | Platform | Surface | Floor | One-time setup |
 | --- | --- | --- | --- |
 | Android | Launcher long-press menu (dynamic shortcuts) | API 26 | None with Compose; otherwise one call in your Activity (below) |
-| iOS | Home Screen quick actions | iOS 13 | Copy one Swift file and adopt its app delegate (below) |
+| iOS | Home Screen quick actions | iOS 13 | None |
 | JVM, macOS, Wasm | `UnsupportedQuickActionsManager` so shared code compiles | — | — |
 
 ### Android
@@ -109,16 +109,10 @@ Static shortcuts in `shortcuts.xml` are delivered too when their intent uses `Qu
 
 ### iOS
 
-UIKit hands quick actions to the app delegate, which Kotlin cannot own, so one Swift file bridges it:
-
-1. Copy `swift/QuickActionsDelegates.swift` into the app target and point its `import` at your Kotlin framework.
-2. Adopt it: `@UIApplicationDelegateAdaptor(QuickActionsAppDelegate.self) var delegate` in your SwiftUI `App`,
-   or forward the three calls from your own delegates.
-3. Export the library from your framework so Swift sees `QuickActions` by name:
-
-```kotlin
-binaries.framework { export(project(":quick-actions")) }   // plus api(...) in commonMain
-```
+Nothing to wire. When the binary loads, the library hooks the app and scene delegates the app already
+uses, so taps reach `launches` in SwiftUI-lifecycle apps, in UIKit apps with their own delegates, and in
+apps without a scene manifest. Delegate methods you implement yourself keep running. No Swift file, no
+`export`, no delegate adaptor.
 
 `icon` is an SF Symbol name. The Home Screen shows four items in total, static `Info.plist` items first,
 so `maxActions` is four minus the static count.
@@ -140,7 +134,8 @@ so `maxActions` is four minus the static count.
 
 | Symptom | Cause |
 | --- | --- |
-| Actions publish but taps never arrive | Delivery not wired: `QuickActions.isDeliveryInstalled` is `false`. Android: call `QuickActions.attach`. iOS: adopt `QuickActionsAppDelegate`. |
+| Android: actions publish but taps never arrive | `QuickActions.attach` was never called; Compose does it in `rememberQuickActionsManager()`. |
+| iOS: `QuickActions.isDeliveryInstalled` is `false` | The library is not linked into the process, which only happens in a test host. In an app it is always `true`. |
 | iOS: `TooManyActions` with four items | Static `Info.plist` items count against the four slots. |
 | Android: the same launch arrives twice | You call both `attach` and `handleLaunchIntent`. Use one. |
 | Android: menu shows the subtitle only | Fixed in 0.1.0; the long label keeps the title. |

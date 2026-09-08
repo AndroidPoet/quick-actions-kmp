@@ -9,8 +9,8 @@ description: Add quick-actions-kmp to a Kotlin Multiplatform project.
 
 ```kotlin
 commonMain.dependencies {
-    implementation("io.github.androidpoet:quick-actions:0.1.0")
-    implementation("io.github.androidpoet:quick-actions-compose:0.1.0")   // Compose Multiplatform helpers
+    implementation("io.github.androidpoet:quick-actions:0.2.0")
+    implementation("io.github.androidpoet:quick-actions-compose:0.2.0")   // Compose Multiplatform helpers
 }
 ```
 
@@ -42,6 +42,6 @@ Keep both helpers at the root of the UI: publishing an equal list is free, and e
 
 - **Android**: none when you use `rememberQuickActionsManager()`. Otherwise call `QuickActions.attach(activity)` once in
   `onCreate`. Set `QuickActions.androidConfig` for icons. See [Android](/android).
-- **iOS**: copy `swift/QuickActionsDelegates.swift` into the app target and adopt `QuickActionsAppDelegate`. See [iOS](/ios).
+- **iOS**: nothing. Delivery hooks itself in when the binary loads. See [iOS](/ios).
 
 `QuickActions.isDeliveryInstalled` tells you the wiring is in place.

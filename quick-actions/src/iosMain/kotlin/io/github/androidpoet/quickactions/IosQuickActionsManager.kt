@@ -19,8 +19,8 @@ import platform.Foundation.NSThread
  * static `Info.plist` items first, so [maxActions] is four minus the static
  * count. Published actions are restored from the platform the first time they
  * are needed on the main thread (immediately when constructed there). Launches
- * arrive through [QuickActions.handle], called from the Swift glue. Use [QuickActions.manager]
- * for one shared instance.
+ * arrive on their own: the library hooks the app and scene delegates at load time,
+ * so no delegate code is needed. Use [QuickActions.manager] for one shared instance.
  */
 public class IosQuickActionsManager internal constructor(
     private val store: ShortcutItemsStore,
@@ -28,7 +28,9 @@ public class IosQuickActionsManager internal constructor(
     seedNow: Boolean,
 ) : QuickActionsManager {
     /** Uses the real Home Screen list and the process-wide launch stream. */
-    public constructor() : this(UIKitShortcutItemsStore(), QuickActions.dispatcher, seedNow = NSThread.isMainThread)
+    public constructor() : this(UIKitShortcutItemsStore(), QuickActions.dispatcher, seedNow = NSThread.isMainThread) {
+        QuickActions.installDelivery()
+    }
 
     private val state = MutableStateFlow<List<QuickAction>>(emptyList())
     private val mutex = Mutex()

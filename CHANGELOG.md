@@ -4,6 +4,20 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.2.0 - Unreleased
+
+### Changed
+
+- **iOS** — delivery needs no app code any more. The library hooks the app and scene delegates when the
+  binary loads (a cinterop Objective-C unit), so `connectionOptions.shortcutItem`, `performActionFor` and
+  the launch options all reach `launches`, and the item that launched the app is delivered once. Drop
+  `QuickActionsDelegates.swift`, the `@UIApplicationDelegateAdaptor` line and the framework `export`.
+
+### Removed
+
+- iOS `QuickActions.installDelivery()` and `QuickActions.handle(item:createdScreen:)`; they existed only for
+  the Swift glue. `QuickActions.isDeliveryInstalled` is now read-only and reports the hooks.
+
 ## 0.1.0 - 2026-09-07
 
 ### Added

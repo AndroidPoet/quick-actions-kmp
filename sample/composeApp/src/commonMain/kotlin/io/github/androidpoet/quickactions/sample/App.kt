@@ -89,7 +89,10 @@ fun App() {
         ) {
             Text("Quick Actions", style = MaterialTheme.typography.headlineMedium)
             Text("Platform: ${platformName()}", style = MaterialTheme.typography.bodyMedium)
-            Text("Supported: ${manager.isSupported} · Max dynamic: ${manager.maxActions}", style = MaterialTheme.typography.bodyMedium)
+            Text(
+                "Supported: ${manager.isSupported} · Max dynamic: ${manager.maxActions} · Delivery: ${if (deliveryInstalled()) "armed" else "off"}",
+                style = MaterialTheme.typography.bodyMedium,
+            )
 
             LaunchCard(lastLaunch)
 
@@ -143,3 +146,6 @@ private fun LaunchCard(launch: QuickActionLaunch?) {
 }
 
 expect fun platformName(): String
+
+/** Whether launch delivery is wired on this platform (`QuickActions.isDeliveryInstalled`). */
+expect fun deliveryInstalled(): Boolean

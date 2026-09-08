@@ -148,7 +148,6 @@ class IosQuickActionsManagerTest {
             val launch = QuickActions.handle(published, createdScreen = true)
             assertEquals(a, launch.action)
             assertTrue(launch.createdScreen)
-            assertTrue(QuickActions.isDeliveryInstalled)
 
             @Suppress("UNCHECKED_CAST")
             val info = NSDictionary.dictionaryWithObjects(listOf("v", 1), forKeys = listOf(NSString.create(string = "k"), NSString.create(string = "n"))) as Map<Any?, *>

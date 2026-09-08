@@ -16,14 +16,12 @@ kotlin {
         target.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
-            // Exposes QuickActions to Swift under its own name for the delegate glue.
-            export(project(":quick-actions"))
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            api(project(":quick-actions"))
+            implementation(project(":quick-actions"))
             implementation(project(":quick-actions-compose"))
             implementation(compose.runtime)
             implementation(compose.foundation)

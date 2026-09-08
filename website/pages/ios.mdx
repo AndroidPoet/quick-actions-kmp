@@ -1,6 +1,6 @@
 ---
 title: iOS
-description: UIApplicationShortcutItem behind the common API, plus the one Swift file that delivers taps.
+description: UIApplicationShortcutItem behind the common API; delivery hooks itself in, nothing to wire.
 ---
 
 # iOS
@@ -9,32 +9,20 @@ iOS 13 and up. Items are written to `UIApplication.shared.shortcutItems` on the 
 
 ## Delivery
 
-UIKit hands quick actions to the app delegate, which Kotlin cannot own, so one Swift file bridges it.
+Nothing to wire. When the binary loads, the library adds `scene(_:willConnectTo:options:)` and
+`windowScene(_:performActionFor:completionHandler:)` to whatever scene delegate class the app uses, and
+`application(_:performActionFor:completionHandler:)` to the app delegate, before UIKit inspects them.
+Methods you already implement are wrapped and still called. That covers SwiftUI-lifecycle apps (SwiftUI's
+own delegates), UIKit apps with their own delegates, and apps without a scene manifest, where the launch
+item is read from the launch options.
 
-1. Copy `swift/QuickActionsDelegates.swift` into the app target and point its `import` at your Kotlin framework.
-2. Adopt it in a SwiftUI app:
+The tap that launched the app arrives with `createdScreen = true`; a tap on a running app arrives with
+`createdScreen = false`. The launching item reaches more than one UIKit callback and is delivered once.
+A tap that arrives before your first manager exists is held and delivered when
+`rememberQuickActionsManager()` or `QuickActions.manager` runs.
 
-```swift
-@main
-struct MyApp: App {
-    @UIApplicationDelegateAdaptor(QuickActionsAppDelegate.self) var delegate
-    var body: some Scene { WindowGroup { ContentView() } }
-}
-```
-
-   UIKit apps with their own delegates forward the three calls instead: `scene(_:willConnectTo:)`
-   (`connectionOptions.shortcutItem`, `createdScreen: true`), `windowScene(_:performActionFor:)`
-   (`createdScreen: false`), and, without a scene manifest, `didFinishLaunchingWithOptions` returning
-   `false` when a shortcut item started the app so `performActionFor` does not fire a second time.
-3. Export the library from your Kotlin framework so Swift sees `QuickActions` by name:
-
-```kotlin
-listOf(iosArm64(), iosSimulatorArm64()).forEach {
-    it.binaries.framework { export(project(":quick-actions")) }
-}
-```
-
-with `api("io.github.androidpoet:quick-actions:0.1.0")` in `commonMain`.
+`QuickActions.isDeliveryInstalled` reports whether the hooks are in place. It is `false` only when the
+library is not linked into the process, such as a unit-test host.
 
 ## Icons and limits
 
