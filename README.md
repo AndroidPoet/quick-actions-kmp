@@ -35,7 +35,7 @@ comes back in the launch, on both platforms, whether the tap started the app or 
   <tr>
     <td><img src="art/ios-menu.png" alt="iOS quick action menu with a static item and three dynamic actions" width="200"/></td>
     <td><img src="art/ios-launch.png" alt="Sample app on iOS showing the action that opened it after a cold start" width="200"/></td>
-    <td><img src="art/android-menu.png" alt="Android app drawer shortcut menu with a static item and three dynamic actions" width="200"/></td>
+    <td><img src="art/android-menu.png" alt="Android launcher shortcut menu with a static item and three dynamic actions" width="200"/></td>
     <td><img src="art/android-launch.png" alt="Sample app on Android showing the action that opened it after a cold start" width="200"/></td>
   </tr>
 </table>
